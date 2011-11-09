@@ -1,0 +1,17 @@
+Site owner database
+
+verify.php
+	Verify that site url == registered site url
+	Allow the poster to subscribe to furhter comments
+
+feed.php
+	Get comments via feed.
+	link from script.php
+
+script.php
+	local cache
+	http cache?
+
+
+Site admin interface
+	Flag comments from the comment page
