@@ -1,6 +1,6 @@
 <?php
 	header('Content-Type: text/javascript');
-	$siteID = intval($_GET['id']);
+	$siteID = intval($_GET['sid']);
 	if(isset($_GET['url']))
 		$siteUrl = $_GET['url'];
 	else

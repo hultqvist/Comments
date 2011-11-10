@@ -7,8 +7,8 @@ mysql_select_db($db_database) or die(mysql_error());
 mysql_query("SET NAMES 'utf8'")
  or die(mysql_error());
 
-mysql_query('DROP TABLE comments;')
- or die(mysql_error());
+//mysql_query('DROP TABLE comments;')
+// or die(mysql_error());
 
 mysql_query('CREATE TABLE comments (
 	ID INT NOT NULL auto_increment,
