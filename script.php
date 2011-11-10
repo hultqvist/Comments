@@ -1,10 +1,6 @@
 <?php
-	header('Content-Type: text/javascript');
-	$siteID = intval($_GET['sid']);
-	if(isset($_GET['url']))
-		$siteUrl = $_GET['url'];
-	else
-		$siteUrl = $_SERVER['HTTP_REFERER'];
+header('Content-Type: text/javascript');
+require_once('parameters.php');
 ?>
 document.getElementById("comments").innerHTML = '<?php
 

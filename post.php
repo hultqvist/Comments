@@ -3,10 +3,7 @@ header('Connection: close');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 
-$siteID = intval($_GET['sid']);
-$siteUrl = $_SERVER['HTTP_REFERER'];
-if(isset($_GET['url']) && filter_var($_GET['url'], FILTER_VALIDATE_URL))
-	$siteUrl = $_GET['url'];
+require_once('parameters.php');
 
 $commentText = trim($_POST['commentText']);
 $commentEmail = filter_var($_POST['commentEmail'], FILTER_SANITIZE_EMAIL);

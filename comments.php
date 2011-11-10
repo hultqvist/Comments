@@ -1,9 +1,6 @@
 <?php
-	$siteID = intval($_GET['sid']);
-	if(isset($_GET['url']))
-		$siteUrl = $_GET['url'];
-	else
-		$siteUrl = $_SERVER['HTTP_REFERER'];
+
+require_once('parameters.php');
 
 require_once("config.php");
 
