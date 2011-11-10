@@ -1,15 +1,18 @@
 <?php
+// Present a single comment feed in raw html
+// Used by script.php but can also be used directly
 
+//Load $siteID and $siteUrl
 require_once('parameters.php');
 
+//Database and service parameters
 require_once("config.php");
 
 mysql_connect($db_host, $db_username, $db_password);
 mysql_select_db($db_database) or die(mysql_error());
 mysql_query("SET NAMES 'utf8'") or die(mysql_error());
 
-
-//==== Comment List
+// Read comments
 
 $result = @mysql_query('
 	SELECT * FROM comments
@@ -44,13 +47,15 @@ echo '</ul>';
 
 mysql_close();
 
-//==== Comment Form
+// Comment Form
 
-echo '<form action="'.$service_url.'/post.php?sid='.$siteID.'&url='.urlencode($siteurl).'" method="post" onsubmit="return commentPost();">';
+echo '<div id="commentForm">';
+echo '<h1>Post your comment here</h1>';
+echo '<form action="'.$service_url.'/script.php?sid='.$siteID.'&url='.urlencode($siteUrl).'" method="post" onsubmit="return commentPost();">';
 echo '<textarea id="commentText" name="commentText"></textarea><br/>';
 echo '<div id="commentStatus"></div>';
 echo 'Your E-Mail address for verification:<br/>';
 echo '<input type="text" id="commentEmail" name="commentEmail" />';
 echo '<input type="submit" value="Post comment" />';
-echo '</form>';
+echo '</form></div>';
 

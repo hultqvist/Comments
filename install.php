@@ -1,4 +1,6 @@
 <?php
+// Create tables in database
+// config.php must contain valid MySql connection information.
 
 require_once("config.php");
 

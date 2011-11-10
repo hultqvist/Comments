@@ -1,11 +1,6 @@
-Post to script.php
-	to reducwe the extra roundtrip time
-
 Site owner database
-
-verify.php
-	Verify that site url == registered site url
-	Allow the poster to subscribe to furhter comments
+	verify.php
+		Verify that site url == registered site url
 
 feed.php
 	Get comments via feed.
@@ -17,10 +12,11 @@ script.php
 
 
 Site admin interface
-	Flag comments from the comment page
+	Manage comments from the original post.
 
 Verification
 	Only send one verification mail per email address
 	Once clicked the link
 		Show the unverified posts
 		Allow to choose which to verify
+		Allow to subscribe to furhter comments

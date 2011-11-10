@@ -30,6 +30,10 @@ article {
 	padding: 5px;
 }
 
+#commentForm{
+	background: lightgray;
+}
+
 .commentOk,
 .commentError {
 	display: block;
@@ -42,7 +46,7 @@ article {
 	background: red;
 }
 
-#comments textarea{
+#commentForm textarea{
 	width: 588px;
 	border: 1px solid gray;
 	padding: 5px;
@@ -50,13 +54,13 @@ article {
 	height: 8em;
 }
 
-#comments input{
+#commentForm input{
 	width: 378px;
 	padding: 10px;
 	margin: 0 10px 0 0;
 	border: 1px solid gray;
 }
-#comments input[type=submit]{
+#commentForm input[type=submit]{
 	width: 190px;
 	padding: 10px;
 	margin: 0;

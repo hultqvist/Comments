@@ -1,6 +1,25 @@
 <?php
-header('Content-Type: text/javascript');
+// Main script called by the pages using this service.
+
+//Close connection since it is only called once for every page load.
+header('Connection: close');
+//Allow cross site posting, enable other sites to use your service
+//Remove these two header lines if you only use the service from the same site.
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+
+//Load $siteID and $siteUrl
 require_once('parameters.php');
+
+if(isset($_POST['commentText']))
+{
+	header('Content-Type: text/html');
+	require('post.php');
+	return;
+}
+
+header('Content-Type: text/javascript');
+
 ?>
 document.getElementById("comments").innerHTML = '<?php
 
@@ -23,7 +42,7 @@ function commentPost()
 		else
 			document.getElementById("commentStatus").innerHTML = "Error: " + req.status + ": " + req.statusText;
 	};
-	req.open('POST', '<?php echo $service_url; ?>/post.php?sid=<?php echo $siteID; ?>&url=<?php echo urlencode($siteUrl); ?>', true);
+	req.open('POST', '<?php echo $service_url; ?>/script.php?sid=<?php echo $siteID; ?>&url=<?php echo urlencode($siteUrl); ?>', true);
 	var parameters = 'commentText='+encodeURI(document.getElementById('commentText').value)+
 		'&commentEmail='+encodeURI(document.getElementById('commentEmail').value);
 	req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");

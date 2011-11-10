@@ -1,9 +1,8 @@
 <?php
 
 // Instructions:
-// 1. Fill all fields
+// 1. Adjust all fields
 // 2. Rename this file to config.php
-
 
 //MySql connection parameters
 $db_host = "localhost";

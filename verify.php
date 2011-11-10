@@ -1,4 +1,6 @@
 <?php
+//This is called when a person clicks the verification link in an email.
+
 header('Connection: close');
 
 $siteID = intval($_GET['sid']);

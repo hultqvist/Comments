@@ -1,9 +1,5 @@
 <?php
-header('Connection: close');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-
-require_once('parameters.php');
+// This is called when comments get posted
 
 $commentText = trim($_POST['commentText']);
 $commentEmail = filter_var($_POST['commentEmail'], FILTER_SANITIZE_EMAIL);
@@ -19,9 +15,9 @@ if(filter_var($commentEmail, FILTER_VALIDATE_EMAIL) === FALSE)
 	echo '<span class="commentError">Invalid email address</span>';
 	return;
 }
-if(filter_var($siteUrl, FILTER_VALIDATE_URL) === FALSE)
+if($siteUrl === FALSE)
 {
-	echo '<span class="commentError">Unvalid site url, contact website owner</span>';
+	echo '<span class="commentError">Invalid site url: '.htmlentities($_GET['url']).', contact website owner</span>';
 	return;
 }
 
@@ -62,4 +58,4 @@ if(!$mailed)
 	return;
 }
 
-echo '<span class="commentOk">Comment awaiting verification, check your email</span>';
+echo '<span class="commentOk">Comment awaits your verification, check your email</span>';
