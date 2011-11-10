@@ -14,17 +14,17 @@ $commentEmail = filter_var($_POST['commentEmail'], FILTER_SANITIZE_EMAIL);
 //Verify input
 if(strlen($commentText) === 0)
 {
-	echo 'Empty text';
+	echo '<span class="commentError">Empty text</span>';
 	return;
 }
 if(filter_var($commentEmail, FILTER_VALIDATE_EMAIL) === FALSE)
 {
-	echo 'Invalid email address';
+	echo '<span class="commentError">Invalid email address</span>';
 	return;
 }
 if(filter_var($siteUrl, FILTER_VALIDATE_URL) === FALSE)
 {
-	echo 'Unvalid site url, contact website owner';
+	echo '<span class="commentError">Unvalid site url, contact website owner</span>';
 	return;
 }
 
@@ -48,7 +48,7 @@ NOW(),
 \''.mysql_real_escape_string($verificationCode).'\')');
 
 if(!$res) {
-	echo mysql_error();
+	echo '<span class="commentError">'.mysql_error().'</span>';
 	return;
 }
 $id = mysql_insert_id();
@@ -61,8 +61,8 @@ Click here:
 		'From: '.$service_email);
 if(!$mailed)
 {
-	echo "Failed to send verification email, try again";
+	echo '<span class="commentError">Failed to send verification email, try again</span>';
 	return;
 }
 
-echo "Comment awaiting verification, check your email";
+echo '<span class="commentOk">Comment awaiting verification, check your email</span>';

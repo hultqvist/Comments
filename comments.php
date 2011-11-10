@@ -33,13 +33,14 @@ require_once('markdown.php');
 
 echo '<ul>';
 while ($row = mysql_fetch_assoc($result)) {
-	echo '<li><a name="comment'.$row['ID'].'">';
-	echo '<p>At '.$row['CommentDate'].'</p>';
+	echo '<li id="comment'.$row['ID'].'">';
+	echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($email))).'?s=40&d=identicon">';
+	echo '<span>'.$row['CommentDate'].'</span></div>';
 	$text = Markdown($row['CommentText']);
 	$text = str_replace("\n", " ", $text);
 	$text = str_replace("\r", " ", $text);
 	$text = str_replace("'", "&apos;", $text);
-	echo '<p>'.$text.'</p>';
+	echo $text;
 	echo '</li>';
 }
 echo '</ul>';
@@ -48,11 +49,11 @@ mysql_close();
 
 //==== Comment Form
 
-echo '<form action="'.$service_url.'/post.php?id='.$siteID.'&url='.urlencode($siteurl).'" method="post" onsubmit="return commentPost();">';
-echo '<textarea id="commentText" style="width:80%; height: 12em"></textarea><br/>';
+echo '<form action="'.$service_url.'/post.php?sid='.$siteID.'&url='.urlencode($siteurl).'" method="post" onsubmit="return commentPost();">';
+echo '<textarea id="commentText" name="commentText"></textarea><br/>';
 echo '<div id="commentStatus"></div>';
 echo 'Your E-Mail address for verification:<br/>';
-echo '<input style="width:50%; margin-right: 10%;" type="text" id="commentEmail" />';
-echo '<input style="width:20%" type="submit" value="Send" />';
+echo '<input type="text" id="commentEmail" name="commentEmail" />';
+echo '<input type="submit" value="Post comment" />';
 echo '</form>';
 
