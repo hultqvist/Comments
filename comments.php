@@ -37,7 +37,7 @@ require_once('markdown.php');
 
 echo '<ul>';
 while ($row = mysql_fetch_assoc($result)) {
-	echo '<li id="comment'.$row['ID'].'">';
+	echo '<li id="comment'.$row['CommentID'].'">';
 	echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($row['CommentEmail']))).'?s=40&d=identicon">';
 	echo '<span>'.$row['CommentDate'].'</span></div>';
 	$text = Markdown($row['CommentText']);

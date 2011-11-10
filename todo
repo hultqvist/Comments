@@ -8,6 +8,10 @@ Site admin interface
 Verification
 	Only send one verification mail per email address
 	Once clicked the link
+		Set authentication cookie
+		Show logout link
 		Show the unverified posts
-		Allow to choose which to verify
-		Allow to subscribe to furhter comments
+		Choose which comments to verify
+		Subscribe to comments by email
+		Register a new site
+
