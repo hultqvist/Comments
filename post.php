@@ -58,7 +58,7 @@ $mailed = mail($commentEmail,
 		'To verify your comment on '.$siteUrl.'
 Click here:
 '.$service_url.'/verify.php?cid='.$id.'&sid='.$siteID.'&code='.$verificationCode,
-		'From: '.$site_email);
+		'From: '.$service_email);
 if(!$mailed)
 {
 	echo "Failed to send verification email, try again";
