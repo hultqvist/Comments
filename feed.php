@@ -6,7 +6,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 ';
 
-//Load $siteID and $siteUrl
+//Load $siteID and $pageUrl
 require_once('parameters.php');
 
 //Database and service parameters
@@ -26,20 +26,20 @@ $siteAuthor = "Peter Hultqvist";
 echo '
 	<title>'.htmlentities($siteName).'</title>
 	<link href="'.htmlentities($siteBaseUrl).'"/>
-	<link href="'.$service_url.'/feed.php?sid='.$siteID.'&amp;url='.urlencode($siteUrl).'" rel="self"/>
+	<link href="'.$service_url.'/feed.php?sid='.$siteID.'&amp;url='.urlencode($pageUrl).'" rel="self"/>
 	<updated>'.gmdate('Y-m-d\TH:i:s\Z').'</updated>
 	<author>
 		<name>'.htmlentities($siteAuthor).'</name>
 	</author>
-	<id>'.htmlentities($siteUrl).'</id>
+	<id>'.htmlentities($pageUrl).'</id>
 ';
 
 // Read comments
 
 $result = @mysql_query('
-	SELECT * FROM comments
+	SELECT * FROM Comments
 	WHERE SiteID = '.$siteID.'
-	'.($siteUrl === FALSE ? '' : 'AND SiteUrl = \''.mysql_real_escape_string($siteUrl).'\'').'
+	'.($pageUrl === FALSE ? '' : 'AND pageUrl = \''.mysql_real_escape_string($pageUrl).'\'').'
 	AND VerifiedDate IS NOT NULL
 	ORDER BY CommentDate DESC
 	LIMIT 50
@@ -49,7 +49,7 @@ $result = @mysql_query('
 require_once('markdown.php');
 
 while ($row = mysql_fetch_assoc($result)) {
-	$link = htmlentities($row['SiteUrl']).'#comment'.$row['ID'];
+	$link = htmlentities($row['pageUrl']).'#comment'.$row['CommentID'];
 	echo '
 	<entry>
 		<title>Comment</title>

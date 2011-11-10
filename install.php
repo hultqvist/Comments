@@ -9,13 +9,14 @@ mysql_select_db($db_database) or die(mysql_error());
 mysql_query("SET NAMES 'utf8'")
  or die(mysql_error());
 
-//mysql_query('DROP TABLE comments;')
-// or die(mysql_error());
+mysql_query('DROP TABLE Comments;') or print(mysql_error());
+mysql_query('DROP TABLE Sites;') or print(mysql_error());
+mysql_query('DROP TABLE Authors;') or print(mysql_error());
 
-mysql_query('CREATE TABLE comments (
-	ID INT NOT NULL auto_increment,
+mysql_query('CREATE TABLE Comments (
+	CommentID INT NOT NULL auto_increment,
 	SiteID INT NOT NULL,
-	SiteUrl TINYTEXT NOT NULL,
+	PageUrl TINYTEXT NOT NULL,
 	CommentIP TINYTEXT,
 	CommentText text NOT NULL,
 	CommentDate DATETIME NOT NULL,
@@ -23,8 +24,24 @@ mysql_query('CREATE TABLE comments (
 	VerificationCode TINYBLOB,
 	VerifiedDate DATETIME,
 	VerifiedIP TINYTEXT,
-	PRIMARY KEY (ID)
+	PRIMARY KEY (CommentID)
 )')
- or die(mysql_error());
+ or print(mysql_error());
+
+mysql_query('CREATE TABLE Sites (
+	SiteID INT NOT NULL auto_increment,
+	SiteUrl TINYTEXT NOT NULL,
+	AdminAuthorID INT,
+	PRIMARY KEY (SiteID)
+)')
+ or print(mysql_error());
+
+mysql_query('CREATE TABLE Authors (
+	AuthorID INT NOT NULL auto_increment,
+	AuthorEmail TINYTEXT NOT NULL,
+	AuthorCode TINYBLOB,
+	PRIMARY KEY (AuthorID)
+)')
+ or print(mysql_error());
 
 mysql_close();

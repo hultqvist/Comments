@@ -15,7 +15,7 @@ if(filter_var($commentEmail, FILTER_VALIDATE_EMAIL) === FALSE)
 	echo '<span class="commentError">Invalid email address</span>';
 	return;
 }
-if($siteUrl === FALSE)
+if($pageUrl === FALSE)
 {
 	echo '<span class="commentError">Invalid site url: '.htmlentities($_GET['url']).', contact website owner</span>';
 	return;
@@ -29,11 +29,31 @@ mysql_query("SET NAMES 'utf8'") or die(mysql_error());
 
 $verificationCode = substr(sha1(time().rand().$_POST['commentEmail'].$_SERVER['REMOTE_ADDR']), 0, 10);
 
-$res = @mysql_query('INSERT INTO comments
-(SiteID, SiteUrl, CommentIP, CommentDate, CommentText, CommentEmail, VerificationCode)
+//Verify pageUrl
+$res = @mysql_query('SELECT SiteUrl FROM Sites WHERE SiteID='.$siteID);
+if(!$res) {
+	echo '<span class="commentError">'.mysql_error().'</span>';
+	return;
+}
+if(mysql_num_rows($res) !== 1)
+{
+	echo '<span class="commentError">No site with sid: '.$siteID.'</span>';
+	return;
+}
+$row = mysql_fetch_assoc($res);
+if(strpos($row['SiteUrl'], $pageUrl) !== 0)
+{
+	echo '<span class="commentError">Wrong url of page: '.htmlentities($pageUrl).' expected: '.htmlentities($row['SiteUrl']).'</span>';
+	return;
+}
+
+
+//Save Comment
+$res = @mysql_query('INSERT INTO Comments
+(SiteID, PageUrl, CommentIP, CommentDate, CommentText, CommentEmail, VerificationCode)
 VALUES
 ('.$siteID.',
-\''.mysql_real_escape_string($siteUrl).'\',
+\''.mysql_real_escape_string($pageUrl).'\',
 \''.mysql_real_escape_string($_SERVER['REMOTE_ADDR']).'\',
 NOW(),
 \''.mysql_real_escape_string($commentText).'\',
@@ -48,9 +68,9 @@ $id = mysql_insert_id();
 
 $mailed = mail($commentEmail,
 		'Verify your comment',
-		'To verify your comment on '.$siteUrl.'
+		'To verify your comment on '.$pageUrl.'
 Click here:
-'.$service_url.'/verify.php?cid='.$id.'&sid='.$siteID.'&code='.$verificationCode,
+'.$service_url.'/verify.php?cid='.$id.'&code='.$verificationCode,
 		'From: '.$service_email);
 if(!$mailed)
 {

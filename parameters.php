@@ -1,13 +1,13 @@
 <?php
-// Read $siteID and $siteUrl
+// Read $siteID and $pageUrl
 // also do some normalization on $sitUrl
 
 $siteID = intval($_GET['sid']);
 
-$siteUrl = FALSE;
+$pageUrl = FALSE;
 if(isset($_GET['url']))
-	$siteUrl = $_GET['url'];
+	$pageUrl = $_GET['url'];
 else if(isset($_SERVER['HTTP_REFERER']))
-	$siteUrl = $_SERVER['HTTP_REFERER'];
-if(filter_var($siteUrl, FILTER_VALIDATE_URL) === FALSE)
-	$siteUrl = FALSE;
+	$pageUrl = $_SERVER['HTTP_REFERER'];
+if(filter_var($pageUrl, FILTER_VALIDATE_URL) === FALSE)
+	$pageUrl = FALSE;

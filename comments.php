@@ -2,7 +2,7 @@
 // Present a single comment feed in raw html
 // Used by script.php but can also be used directly
 
-//Load $siteID and $siteUrl
+//Load $siteID and $pageUrl
 require_once('parameters.php');
 
 //Database and service parameters
@@ -15,15 +15,15 @@ mysql_query("SET NAMES 'utf8'") or die(mysql_error());
 // Read comments
 
 $result = @mysql_query('
-	SELECT * FROM comments
+	SELECT * FROM Comments
 	WHERE SiteID = '.$siteID.'
-	AND SiteUrl = \''.mysql_real_escape_string($siteUrl).'\'
+	AND PageUrl = \''.mysql_real_escape_string($pageUrl).'\'
 	AND VerifiedDate IS NOT NULL
 ')
  or die(mysql_error());
 
 //Feed icon
-echo '<a href="'.$service_url.'/feed.php?sid='.$siteID.'&url='.urlencode($siteUrl).'">Comment feed</a>';
+echo '<a href="'.$service_url.'/feed.php?sid='.$siteID.'&url='.urlencode($pageUrl).'">Comment feed</a>';
 
 $count = mysql_num_rows($result);
 if($count === 0)
@@ -55,7 +55,7 @@ mysql_close();
 
 echo '<div id="commentForm">';
 echo '<h1>Post your comment here</h1>';
-echo '<form action="'.$service_url.'/script.php?sid='.$siteID.'&url='.urlencode($siteUrl).'" method="post" onsubmit="return commentPost();">';
+echo '<form action="'.$service_url.'/script.php?sid='.$siteID.'&url='.urlencode($pageUrl).'" method="post" onsubmit="return commentPost();">';
 echo '<textarea id="commentText" name="commentText"></textarea><br/>';
 echo '<div id="commentStatus"></div>';
 echo 'Your e-mail address for verification:<br/>';

@@ -3,7 +3,6 @@
 
 header('Connection: close');
 
-$siteID = intval($_GET['sid']);
 $commentID = intval($_GET['cid']);
 $code = $_GET['code'];
 
@@ -13,14 +12,14 @@ mysql_connect($db_host, $db_username, $db_password);
 mysql_select_db($db_database) or die(mysql_error());
 mysql_query("SET NAMES 'utf8'") or die(mysql_error());
 
-$res = @mysql_query('UPDATE comments
+$res = @mysql_query('UPDATE Comments
 	SET
 	VerifiedDate = NOW(),
 	VerifiedIP = \''.$_SERVER['REMOTE_ADDR'].'\'
-	WHERE ID='.$commentID.'
-	AND SiteID='.$siteID.'
+	WHERE CommentID='.$commentID.'
 	AND VerificationCode=\''.mysql_real_escape_string($code).'\'
-	AND VerifiedIP IS NULL');
+	AND VerifiedIP IS NULL
+	');
 
 if(!$res) {
 	echo mysql_error();
@@ -33,13 +32,13 @@ if($aff != 1)
 	return;
 }
 
-$result = @mysql_query('SELECT ID, SiteUrl FROM comments
-	WHERE ID='.$commentID.'
-	AND SiteID='.$siteID);
+$result = @mysql_query('SELECT PageUrl FROM Comments WHERE CommentID='.$commentID);
 
-while ($row = mysql_fetch_assoc($result)) {
-	header('Location: '.$row['SiteUrl']);
-	echo '<a href="'.htmlentities($row['SiteUrl']).'#comment'.$row['ID'].'">Continue to '.htmlentities($row['SiteUrl']).'</a>';
+$row = mysql_fetch_assoc($result);
+if($row != NULL){
+	$link=$row['PageUrl'].'#comment'.$commentID;
+	header('Location: '.$link);
+	echo '<a href="'.htmlentities($link).'">Continue to '.htmlentities($link).'</a>';
 }
 
 echo "<p>Comment verified, thank you!</p>";

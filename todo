@@ -1,7 +1,3 @@
-Site owner database
-	verify.php
-		Verify that site url == registered site url
-
 script.php
 	local cache
 	http cache?

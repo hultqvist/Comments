@@ -8,7 +8,7 @@ header('Connection: close');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 
-//Load $siteID and $siteUrl
+//Load $siteID and $pageUrl
 require_once('parameters.php');
 
 if(isset($_POST['commentText']))
@@ -42,7 +42,7 @@ function commentPost()
 		else
 			document.getElementById("commentStatus").innerHTML = "Error: " + req.status + ": " + req.statusText;
 	};
-	req.open('POST', '<?php echo $service_url; ?>/script.php?sid=<?php echo $siteID; ?>&url=<?php echo urlencode($siteUrl); ?>', true);
+	req.open('POST', '<?php echo $service_url; ?>/script.php?sid=<?php echo $siteID; ?>&url=<?php echo urlencode($pageUrl); ?>', true);
 	var parameters = 'commentText='+encodeURI(document.getElementById('commentText').value)+
 		'&commentEmail='+encodeURI(document.getElementById('commentEmail').value);
 	req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
