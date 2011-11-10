@@ -21,6 +21,10 @@ $result = @mysql_query('
 	AND VerifiedDate IS NOT NULL
 ')
  or die(mysql_error());
+
+//Feed icon
+echo '<a href="'.$service_url.'/feed.php?sid='.$siteID.'&url='.urlencode($siteUrl).'">Comment feed</a>';
+
 $count = mysql_num_rows($result);
 if($count === 0)
 	echo '<p>No comments</p>';
@@ -34,7 +38,7 @@ require_once('markdown.php');
 echo '<ul>';
 while ($row = mysql_fetch_assoc($result)) {
 	echo '<li id="comment'.$row['ID'].'">';
-	echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($email))).'?s=40&d=identicon">';
+	echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($row['CommentEmail']))).'?s=40&d=identicon">';
 	echo '<span>'.$row['CommentDate'].'</span></div>';
 	$text = Markdown($row['CommentText']);
 	$text = str_replace("\n", " ", $text);
@@ -54,7 +58,7 @@ echo '<h1>Post your comment here</h1>';
 echo '<form action="'.$service_url.'/script.php?sid='.$siteID.'&url='.urlencode($siteUrl).'" method="post" onsubmit="return commentPost();">';
 echo '<textarea id="commentText" name="commentText"></textarea><br/>';
 echo '<div id="commentStatus"></div>';
-echo 'Your E-Mail address for verification:<br/>';
+echo 'Your e-mail address for verification:<br/>';
 echo '<input type="text" id="commentEmail" name="commentEmail" />';
 echo '<input type="submit" value="Post comment" />';
 echo '</form></div>';
