@@ -24,7 +24,7 @@
 	echo '<p>Put the following two lines on every page you want comments</p>';
 	echo '<code>';
 	echo htmlentities('<div id="comments">Loading comments...</div>
-<script type="text/javascript" src="'.service_url.'/script/?sid='.$sid.'" async="async"></script>');
+<script type="text/javascript" src="'.service_url.'/script/?sid='.siteID.'" async="async"></script>');
 	echo '</code>';
 
 
