@@ -21,7 +21,7 @@ if(strlen($commentText) === 0)
 	echo '<div class="commentError">Empty text</div>';
 	return;
 }
-if(filter_var($commentEmail, FILTER_VALIDATE_EMAIL) === FALSE)
+if($commentEmail != "" && filter_var($commentEmail, FILTER_VALIDATE_EMAIL) === FALSE)
 {
 	echo '<div class="commentError">Invalid email address</div>';
 	return;
@@ -48,11 +48,12 @@ if(strpos($pageUrl, $row['SiteUrl']) !== 0)
 $siteAdminEmail = $row['AdminEmail'];
 
 //Get poster session
-$sessionEmail = GetSessionEmail();
+GetSessionEmail();
 
 //Save Comment
-if($commentEmail == $sessionEmail)
+if(sessionEmail && $commentEmail === sessionEmail)
 {
+	//Already verified poster
 	$res = @mysql_query('INSERT INTO Comments (SiteID, PageUrl, CommentIP, CommentDate, CommentText, CommentEmail, VerifiedIP, VerifiedDate)
 	VALUES
 		('.$siteID.',
@@ -83,32 +84,37 @@ else
 
 	$id = mysql_insert_id();
 
-	//Get Author
-	$verificationCode = TRUE;
-	$res = @mysql_query('SELECT * FROM Authors WHERE Email=\''.mysql_real_escape_String($commentEmail).'\'')
-		or die('<div class="commentError">'.mysql_error().'</div>');
-	$row = mysql_fetch_assoc($res);
-	if($row)
+	if($commentEmail)
 	{
-		//Limit one verification email per day, unless already verified
-		if($row['VerifyCode'] !== NULL)
+		//Get Author
+		$verificationCode = TRUE;
+		$res = @mysql_query('SELECT * FROM Authors WHERE Email=\''.mysql_real_escape_String($commentEmail).'\'')
+			or die('<div class="commentError">'.mysql_error().'</div>');
+		$row = mysql_fetch_assoc($res);
+		if($row)
 		{
-			$vd = strtotime($row['VerifyDate']);
-			if($vd < time() + 3600*24)
+			//Limit one verification email per day, unless already verified
+			if($row['VerifyCode'] !== NULL)
 			{
-				echo '<div class="commentOk">Email verification already sent.</div>';
-				$verificationCode = FALSE;
+				$vd = strtotime($row['VerifyDate']);
+				if($vd < time() + 3600*24)
+				{
+					echo '<div class="commentOk">Email verification already sent.</div>';
+					$verificationCode = FALSE;
+				}
 			}
 		}
-	}
 
-	//Create new VerifyCode
-	if($verificationCode === TRUE)
-	{
-		require_once('../shared.php');
-		GenerateAndSendVerificationCode($commentEmail, $pageUrl);
+		//Create new VerifyCode
+		if($verificationCode === TRUE)
+		{
+			require_once('../shared.php');
+			GenerateAndSendVerificationCode($commentEmail, $pageUrl);
+		}
+		echo '<div class="commentOk">Comment awaits your verification, check your email</div>';
 	}
-	echo '<div class="commentOk">Comment awaits your verification, check your email</div>';
+	else
+		echo '<div class="commentOk">Comment awaits moderation</div>';
 }
 
 //Send email to site owner

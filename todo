@@ -1,8 +1,7 @@
-Anonymous comments
-
 Site admin
 	Delete comments
 	Verify comments
+		Non anonymous comments will be stripped of email if verified by site admin
 
 Service admin
 	Purge old unverified comments
