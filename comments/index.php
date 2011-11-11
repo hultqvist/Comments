@@ -27,6 +27,11 @@ $result = @mysql_query('
 ')
  or die(mysql_error());
 
+//Style
+echo '<style type="text/css">';
+require('style.css');
+echo '</style>';
+
 //Feed icon
 echo '<a href="'.service_url.'/feed/?sid='.siteID.'&url='.urlencode(siteUrl.pagePath).'">Comment feed</a>';
 

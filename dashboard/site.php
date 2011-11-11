@@ -14,9 +14,19 @@
 	}
 
 	$siteUrl = htmlentities($row['SiteUrl']);
+	echo '<h1>'.$siteUrl.'</h1>';
 	echo '<a href="'.$siteUrl.'">'.$siteUrl.'</a>';
 
+	echo '<h1>HTML code</h1>';
+	echo '<p>Put the following two lines on every page you want comments</p>';
+	echo '<code>';
+	echo htmlentities('<div id="comments">Loading comments...</div>
+<script type="text/javascript" src="'.service_url.'/script/?sid='.$sid.'" async="async"></script>');
+	echo '</code>';
+
+
 	//Comments
+	echo '<h1>Comments</h1>';
 	$result = @mysql_query('
 		SELECT * FROM Comments
 		WHERE SiteID='.$sid)

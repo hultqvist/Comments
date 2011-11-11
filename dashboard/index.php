@@ -12,23 +12,29 @@ GetSessionConstants();
 	<link rel="stylesheet" href="../style.css" type="text/css" />
 </head>
 <body>
+<header>
+	<a href="?comments">Comments</a>
+	<a href="?sites">Sites</a>
+	<a href="?register">Register website</a>
+	<strong><?php echo htmlentities(sessionEmail);?></strong>
+	<a href="<?php echo service_url;?>/logout/">Logout</a>
+</header>
 <article>
-<div>
-	<a href="?">Start</a>
-</div>
 <?php
 if(sessionEmail !== null)
 {
-	echo '<h1>'.htmlentities(sessionEmail).' <a href="'.service_url.'/logout/">logout</a></h1>';
-
-	if(isset($_GET['verify']))
+	if(isset($_REQUEST['register']))
+		require('register.php');
+	elseif(isset($_GET['verify']))
 		require('verify.php');
 	elseif(isset($_GET['delete']))
 		require('delete.php');
 	elseif(isset($_GET['sid']))
 		require('site.php');
+	elseif(isset($_GET['sites']))
+		require('sites.php');
 	else
-		require('main.php');
+		require('comments.php');
 
 mysql_close();
 

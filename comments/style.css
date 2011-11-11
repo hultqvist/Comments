@@ -1,0 +1,50 @@
+#comments>ul {
+	padding: 0;
+}
+#comments>ul>li {
+	list-style-type:none;
+	padding: 0;
+	margin: 0;
+}
+#comments .commentAuthor {
+	background: lightgray;
+}
+#comments .commentAuthor img {
+	vertical-align:middle;
+	padding: 5px;
+}
+
+.commentOk,
+.commentError {
+	padding: 2em;
+}
+.commentOk {
+	background: lightgreen;
+}
+.commentError {
+	background: red;
+}
+
+#commentForm{
+	background: lightgray;
+	padding: 10px;
+}
+
+#commentForm textarea{
+	width: 568px;
+	border: 1px solid gray;
+	padding: 5px;
+	margin: 0;
+	height: 8em;
+}
+
+#commentForm input{
+	width: 378px;
+	padding: 10px;
+	margin: 0 10px 0 0;
+	border: 1px solid gray;
+}
+#commentForm input[type=submit]{
+	width: 165px;
+	margin: 0;
+}
