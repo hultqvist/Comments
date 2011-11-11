@@ -16,7 +16,7 @@ mysql_query('DROP TABLE Authors;') or print(mysql_error());
 mysql_query('CREATE TABLE Comments (
 	CommentID INT NOT NULL auto_increment,
 	SiteID INT NOT NULL,
-	PageUrl VARCHAR(255) NOT NULL,
+	PagePath VARCHAR(255) NOT NULL,
 	CommentIP VARBINARY(16) NOT NULL,
 	CommentEmail VARCHAR(255) NOT NULL,
 	CommentText VARCHAR(32767) NOT NULL,

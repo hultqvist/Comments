@@ -8,8 +8,14 @@ header('Content-Type: text/html');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 
-//Load $siteID and $pageUrl
-require_once('../parameters.php');
+require_once('../shared.php');
+GetSiteConstants();
+
+if(urlError)
+{
+	echo '<div class="commentError">'.urlError.'</div>';
+	return;
+}
 
 $commentText = trim($_POST['commentText']);
 $commentEmail = filter_var($_POST['commentEmail'], FILTER_SANITIZE_EMAIL);
@@ -26,38 +32,18 @@ if($commentEmail != "" && filter_var($commentEmail, FILTER_VALIDATE_EMAIL) === F
 	echo '<div class="commentError">Invalid email address</div>';
 	return;
 }
-if($pageUrl === FALSE)
-{
-	echo '<div class="commentError">Invalid site url: '.htmlentities($_GET['url']).', contact website owner</div>';
-	return;
-}
-
-require_once('../shared.php');
-
-//Verify pageUrl
-$res = @mysql_query('SELECT * FROM Sites WHERE SiteID='.$siteID)
-	or die('<div class="commentError">'.mysql_error().'</div>');
-if(mysql_num_rows($res) !== 1)
-	die('<div class="commentError">No site with sid: '.$siteID.'</div>');
-$row = mysql_fetch_assoc($res);
-if(strpos($pageUrl, $row['SiteUrl']) !== 0)
-{
-	echo '<div class="commentError">Wrong url of page: '.htmlentities($pageUrl).' expected: '.htmlentities($row['SiteUrl']).'</div>';
-	return;
-}
-$siteAdminEmail = $row['AdminEmail'];
 
 //Get poster session
-GetSessionEmail();
+GetSessionConstants();
 
 //Save Comment
 if(sessionEmail && $commentEmail === sessionEmail)
 {
 	//Already verified poster
-	$res = @mysql_query('INSERT INTO Comments (SiteID, PageUrl, CommentIP, CommentDate, CommentText, CommentEmail, VerifiedIP, VerifiedDate)
+	$res = @mysql_query('INSERT INTO Comments (SiteID, PagePath, CommentIP, CommentDate, CommentText, CommentEmail, VerifiedIP, VerifiedDate)
 	VALUES
-		('.$siteID.',
-		\''.mysql_real_escape_string($pageUrl).'\',
+		('.siteID.',
+		\''.mysql_real_escape_string(pagePath).'\',
 		\''.mysql_real_escape_string($_SERVER['REMOTE_ADDR']).'\',
 		NOW(),
 		\''.mysql_real_escape_string($commentText).'\',
@@ -72,15 +58,17 @@ if(sessionEmail && $commentEmail === sessionEmail)
 else
 {
 	//Non verified comment
-	$res = @mysql_query('INSERT INTO Comments (SiteID, PageUrl, CommentIP, CommentDate, CommentText, CommentEmail)
+	$res = @mysql_query('INSERT INTO Comments (SiteID, PagePath, CommentIP, CommentDate, CommentText, CommentEmail)
 	VALUES
-		('.$siteID.',
-		\''.mysql_real_escape_string($pageUrl).'\',
+		('.siteID.',
+		\''.mysql_real_escape_string(pagePath).'\',
 		\''.mysql_real_escape_string($_SERVER['REMOTE_ADDR']).'\',
 		NOW(),
 		\''.mysql_real_escape_string($commentText).'\',
 		\''.mysql_real_escape_string($commentEmail).'\'
-	)');
+	)')
+	or die('<div class="commentError">'.mysql_error().'</div>');
+
 
 	$id = mysql_insert_id();
 
@@ -118,15 +106,11 @@ else
 }
 
 //Send email to site owner
-$headers = "From: ".service_email;
-if($commentEmail == sessionEmail)
-{
-	$headers .= "\nReply-To: ".sessionEmail;
-}
+$headers = "From: ".service_email."\nReply-To: ".$commentEmail;
 
-mail($siteAdminEmail, "New comment on ".$pageUrl,
+mail(siteAdminEmail, "New comment on ".siteUrl.pagePath,
 	"Dashboard: ".service_url."/dashboard/\n".
 	"From: ".$_SERVER['REMOTE_ADDR']."\n".
 	"Email: ".$commentEmail.($commentEmail == sessionEmail?'(verified)':'(not checked)')."\n".
-	"To: ".$pageUrl."\n".
+	"To: ".siteUrl.pagePath."\n".
 	$commentText, $headers);

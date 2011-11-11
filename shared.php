@@ -7,6 +7,64 @@ mysql_connect($db_host, $db_username, $db_password);
 mysql_select_db($db_database) or die(mysql_error());
 mysql_query("SET NAMES 'utf8'") or die(mysql_error());
 
+//Page URL checks and normalization
+function GetSiteConstants()
+{
+	//SiteID
+	if(isset($_GET['sid']) === FALSE)
+	{
+		define("urlError", 'Missing ?sid=...');
+		return;
+	}
+	$sid = intval($_GET['sid']);
+
+	//Page URL
+	if(isset($_SERVER['HTTP_REFERER']))
+		$url = $_SERVER['HTTP_REFERER'];
+	else
+	{
+		define("urlError", 'Missing referer');
+		return;
+	}
+	if(isset($_GET['url']))
+		$url = $_GET['url'];
+	if(filter_var($url, FILTER_VALIDATE_URL) === FALSE)
+	{
+		define("urlError", 'Invalid url: '.htmlentities($url));
+		return;
+	}
+
+	//Verify pageUrl and referer
+	$res = @mysql_query('SELECT * FROM Sites WHERE SiteID='.$sid)
+		or die(mysql_error());
+	$row = mysql_fetch_assoc($res);
+	if($row === FALSE)
+	{
+		define("urlError", 'No site with sid: '.$sid);
+		return;
+	}
+	$siteUrl = parse_url(rtrim($row['SiteUrl'], "/"));
+	$pageUrl = parse_url(rtrim($url, "/"));
+	if($pageUrl['host'] != $siteUrl['host'] || strpos($pageUrl['path'], $siteUrl['path']) !== 0)
+	{
+		define("urlError", 'Wrong url of page: '.htmlentities($url).' expected: '.htmlentities($row['SiteUrl']));
+		return;
+	}
+	$refUrl = parse_url($_SERVER['HTTP_REFERER']);
+	if($refUrl['host'] != $siteUrl['host'] || strpos($refUrl['path'], $siteUrl['path']) !== 0)
+	{
+		define("urlError", 'Wrong referer: '.htmlentities($_SERVER['HTTP_REFERER']).' expected: '.htmlentities($row['SiteUrl']));
+		return;
+	}
+	define("urlError", FALSE);
+	define("siteID", $sid);
+	define("pagePath", substr($pageUrl['path'], strlen($siteUrl['path'])));
+	define("siteAdminEmail", $row['AdminEmail']);
+	define("siteUrl", $row['SiteUrl']);
+}
+
+
+
 function GenerateAndSendVerificationCode($email, $url)
 {
 	$code = substr(sha1(time().rand().$email.$_SERVER['REMOTE_ADDR']), 0, 10);
@@ -25,7 +83,7 @@ Click here to login and review your comments:
 }
 
 //Return the email address verified by session cookie
-function GetSessionEmail()
+function GetSessionConstants()
 {
 	$email = isset($_COOKIE['email'])? $_COOKIE['email'] : null;
 	$session = isset($_COOKIE['session'])? $_COOKIE['session'] : null;

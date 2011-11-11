@@ -7,7 +7,7 @@ header('Content-Type: text/html');
 
 require_once('../shared.php');
 
-GetSessionEmail();
+GetSessionConstants();
 
 $cid=intval($_GET['cid']);
 

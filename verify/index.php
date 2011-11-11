@@ -8,7 +8,7 @@ header('Content-Type: text/html');
 require_once('../shared.php');
 
 //Get poster session
-$sessionEmail = GetSessionEmail();
+$sessionEmail = GetSessionConstants();
 
 $cid=intval($_GET['cid']);
 

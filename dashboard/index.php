@@ -2,7 +2,7 @@
 
 require_once("../shared.php");
 
-$email = GetSessionEmail();
+GetSessionConstants();
 ?>
 <html>
 <head>
@@ -13,13 +13,14 @@ $email = GetSessionEmail();
 <body>
 <article>
 <?php
-if($email)
+if(sessionEmail)
 {
-	echo '<h1>'.htmlentities($email).' <a href="'.service_url.'/logout/">logout</a></h1>';
+	echo '<h1>'.htmlentities(sessionEmail).' <a href="'.service_url.'/logout/">logout</a></h1>';
 
 $result = @mysql_query('
-	SELECT * FROM Comments
-	WHERE CommentEmail=\''.mysql_real_escape_string($email).'\'
+	SELECT Comments.*, Sites.SiteUrl FROM Comments
+	JOIN Sites on Comments.SiteID=Sites.SiteID
+	WHERE CommentEmail=\''.mysql_real_escape_string(sessionEmail).'\'
 ')
  or die(mysql_error());
 
@@ -36,7 +37,7 @@ $result = @mysql_query('
 			echo '<a href="'.service_url.'/delete/?cid='.$row['CommentID'].'">delete</a> ';
 		}
 		echo '<span>'.$row['CommentDate'].'</span></div>';
-		$url = htmlentities($row['PageUrl']);
+		$url = htmlentities($row['SiteUrl'].$row['PagePath']);
 		echo '<div><a href="'.$url.'">'.$url.'</a></div>';
 		echo Markdown($row['CommentText']);
 		echo '</li>';

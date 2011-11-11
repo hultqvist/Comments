@@ -5,8 +5,14 @@ header('Content-Type: text/javascript');
 
 require_once('../config.php');
 
-//Load $siteID and $pageUrl
-require_once('../parameters.php');
+if(isset($_GET['sid']) === FALSE)
+{
+	echo '<div class="commentError">Missing ?sid=... in script url</div>';
+	return;
+}
+$urlParam='sid='.intval($_GET['sid']);
+if(isset($_GET['url']))
+	$urlParam .= '&url='.urlencode($_GET['url']);
 
 ?>
 loadComments();
@@ -25,7 +31,7 @@ function loadComments()
 		}
 		ce.innerHTML = req.responseText;
 	};
-	req.open('GET', '<?php echo service_url; ?>/comments/?form=1&sid=<?php echo $siteID; ?>&url=<?php echo urlencode($pageUrl); ?>', true);
+	req.open('GET', '<?php echo service_url; ?>/comments/?form=1&<?php echo $urlParam; ?>', true);
 	req.send();
 }
 
@@ -40,7 +46,7 @@ function commentPost()
 		else
 			document.getElementById("commentStatus").innerHTML = "Error: " + req.status + ": " + req.statusText;
 	};
-	req.open('POST', '<?php echo service_url; ?>/post/?sid=<?php echo $siteID; ?>&url=<?php echo urlencode($pageUrl); ?>', true);
+	req.open('POST', '<?php echo service_url; ?>/post/?<?php echo $urlParam; ?>', true);
 	var parameters = 'commentText='+encodeURI(document.getElementById('commentText').value)+
 		'&commentEmail='+encodeURI(document.getElementById('commentEmail').value);
 	req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");

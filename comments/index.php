@@ -2,25 +2,33 @@
 // Present a single comment feed in raw html
 // Used by script.php but can also be used directly
 
-//Load $siteID and $pageUrl
-require_once('../parameters.php');
+//Allow cross site posting, enable other sites to use your service
+//Remove these two header lines if you only use the service from the same site.
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 
 require_once('../shared.php');
+GetSiteConstants();
 
-GetSessionEmail();
+if(urlError)
+{
+	echo '<div class="commentError">'.urlError.'</div>';
+	return;
+}
+
+GetSessionConstants();
 
 // Read comments
-
 $result = @mysql_query('
 	SELECT * FROM Comments
-	WHERE SiteID = '.$siteID.'
-	AND PageUrl = \''.mysql_real_escape_string($pageUrl).'\'
+	WHERE SiteID = '.siteID.'
+	AND PagePath = \''.mysql_real_escape_string(pagePath).'\'
 	AND VerifiedDate IS NOT NULL
 ')
  or die(mysql_error());
 
 //Feed icon
-echo '<a href="'.service_url.'/feed/?sid='.$siteID.'&url='.urlencode($pageUrl).'">Comment feed</a>';
+echo '<a href="'.service_url.'/feed/?sid='.siteID.'&url='.urlencode(siteUrl.pagePath).'">Comment feed</a>';
 
 	$count = mysql_num_rows($result);
 	if($count === 0)
@@ -48,7 +56,7 @@ mysql_close();
 if(isset($_GET['form'])){?>
 <div id="commentForm">
 	<h1>Post your comment here</h1>
-	<form action="<?php echo service_url.'/script.php?sid='.$siteID.'&url='.urlencode($pageUrl);?>" method="post" onsubmit="return commentPost();">
+	<form action="<?php echo service_url.'/script.php?sid='.siteID.'&url='.urlencode(siteUrl.pagePath);?>" method="post" onsubmit="return commentPost();">
 	<textarea id="commentText" name="commentText"></textarea><br/>
 	<div id="commentStatus"></div>
 	<div>Your e-mail address for verification:<?php

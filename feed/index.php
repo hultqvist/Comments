@@ -6,30 +6,26 @@ echo '<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 ';
 
-//Load $siteID and $pageUrl
-require_once('../parameters.php');
-
-//Database and service parameters
 require_once("../shared.php");
 
+if(urlError)
+{
+	header("HTTP/1.1 404 Not Found");
+	echo urlError;
+	return;
+}
+
 // Read site data
-$siteBaseUrl = service_url;
+$siteBaseUrl = siteUrl;
 $siteName = "Comment Feed";
 $siteAuthor = "John Doe";
-$res = @mysql_query('SELECT SiteUrl FROM Sites WHERE SiteID='.$siteID)
-	or die('<div class="commentError">'.mysql_error().'</div>');
-if(mysql_num_rows($res) !== 1)
-	die('<div class="commentError">No site with sid: '.$siteID.'</div>');
-$row = mysql_fetch_assoc($res);
-if($row)
-	$siteBaseUrl = $row['SiteUrl'];
 
 // Atom header
 
 echo '
 	<title>'.htmlentities($siteName).'</title>
 	<link href="'.htmlentities($siteBaseUrl).'"/>
-	<link href="'.service_url.'/feed.php?sid='.$siteID.'&amp;url='.urlencode($pageUrl).'" rel="self"/>
+	<link href="'.service_url.'/feed.php?sid='.siteID.'&amp;url='.urlencode($pageUrl).'" rel="self"/>
 	<updated>'.gmdate('Y-m-d\TH:i:s\Z').'</updated>
 	<author>
 		<name>'.htmlentities($siteAuthor).'</name>
@@ -41,7 +37,7 @@ echo '
 
 $result = @mysql_query('
 	SELECT * FROM Comments
-	WHERE SiteID = '.$siteID.'
+	WHERE SiteID = '.siteID.'
 	'.($pageUrl === FALSE ? '' : 'AND pageUrl = \''.mysql_real_escape_string($pageUrl).'\'').'
 	AND VerifiedDate IS NOT NULL
 	ORDER BY CommentDate DESC
