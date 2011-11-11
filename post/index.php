@@ -35,7 +35,7 @@ if($pageUrl === FALSE)
 require_once('../shared.php');
 
 //Verify pageUrl
-$res = @mysql_query('SELECT SiteUrl FROM Sites WHERE SiteID='.$siteID)
+$res = @mysql_query('SELECT * FROM Sites WHERE SiteID='.$siteID)
 	or die('<div class="commentError">'.mysql_error().'</div>');
 if(mysql_num_rows($res) !== 1)
 	die('<div class="commentError">No site with sid: '.$siteID.'</div>');
@@ -45,6 +45,7 @@ if(strpos($pageUrl, $row['SiteUrl']) !== 0)
 	echo '<div class="commentError">Wrong url of page: '.htmlentities($pageUrl).' expected: '.htmlentities($row['SiteUrl']).'</div>';
 	return;
 }
+$siteAdminEmail = $row['AdminEmail'];
 
 //Get poster session
 $sessionEmail = GetSessionEmail();
@@ -66,45 +67,60 @@ if($commentEmail == $sessionEmail)
 	or die('<div class="commentError">'.mysql_error().'</div>');
 
 	echo '<div class="commentOk">Comment posted.</div>';
-	return;
 }
-
-//Non verified comment
-$res = @mysql_query('INSERT INTO Comments (SiteID, PageUrl, CommentIP, CommentDate, CommentText, CommentEmail)
-VALUES
-	('.$siteID.',
-	\''.mysql_real_escape_string($pageUrl).'\',
-	\''.mysql_real_escape_string($_SERVER['REMOTE_ADDR']).'\',
-	NOW(),
-	\''.mysql_real_escape_string($commentText).'\',
-	\''.mysql_real_escape_string($commentEmail).'\'
-)');
-
-$id = mysql_insert_id();
-
-//Get Author
-$verificationCode = TRUE;
-$res = @mysql_query('SELECT * FROM Authors WHERE Email=\''.mysql_real_escape_String($commentEmail).'\'')
-	or die('<div class="commentError">'.mysql_error().'</div>');
-$row = mysql_fetch_assoc($res);
-if($row)
+else
 {
-	//Limit one verification email per day, unless already verified
-	if($row['VerifyCode'] !== NULL)
+	//Non verified comment
+	$res = @mysql_query('INSERT INTO Comments (SiteID, PageUrl, CommentIP, CommentDate, CommentText, CommentEmail)
+	VALUES
+		('.$siteID.',
+		\''.mysql_real_escape_string($pageUrl).'\',
+		\''.mysql_real_escape_string($_SERVER['REMOTE_ADDR']).'\',
+		NOW(),
+		\''.mysql_real_escape_string($commentText).'\',
+		\''.mysql_real_escape_string($commentEmail).'\'
+	)');
+
+	$id = mysql_insert_id();
+
+	//Get Author
+	$verificationCode = TRUE;
+	$res = @mysql_query('SELECT * FROM Authors WHERE Email=\''.mysql_real_escape_String($commentEmail).'\'')
+		or die('<div class="commentError">'.mysql_error().'</div>');
+	$row = mysql_fetch_assoc($res);
+	if($row)
 	{
-		$vd = strtotime($row['VerifyDate']);
-		if($vd < time() + 3600*24)
+		//Limit one verification email per day, unless already verified
+		if($row['VerifyCode'] !== NULL)
 		{
-			echo '<div class="commentOk">Email verification already sent.</div>';
-			$verificationCode = FALSE;
+			$vd = strtotime($row['VerifyDate']);
+			if($vd < time() + 3600*24)
+			{
+				echo '<div class="commentOk">Email verification already sent.</div>';
+				$verificationCode = FALSE;
+			}
 		}
 	}
+
+	//Create new VerifyCode
+	if($verificationCode === TRUE)
+	{
+		require_once('../shared.php');
+		GenerateAndSendVerificationCode($commentEmail, $pageUrl);
+	}
+	echo '<div class="commentOk">Comment awaits your verification, check your email</div>';
 }
 
-//Create new VerifyCode
-if($verificationCode === TRUE)
+//Send email to site owner
+$headers = "From: ".service_email;
+if($commentEmail == sessionEmail)
 {
-	require_once('../shared.php');
-	GenerateAndSendVerificationCode($commentEmail, $pageUrl);
+	$headers .= "\nReply-To: ".sessionEmail;
 }
-echo '<div class="commentOk">Comment awaits your verification, check your email</div>';
+
+mail($siteAdminEmail, "New comment on ".$pageUrl,
+	"Dashboard: ".service_url."/dashboard/\n".
+	"From: ".$_SERVER['REMOTE_ADDR']."\n".
+	"Email: ".$commentEmail.($commentEmail == sessionEmail?'(verified)':'(not checked)')."\n".
+	"To: ".$pageUrl."\n".
+	$commentText, $headers);
