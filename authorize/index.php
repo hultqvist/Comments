@@ -1,12 +1,7 @@
 <?php
 //This is called when a person clicks the verification link in an email.
 
-require_once("../config.php");
 require_once("../shared.php");
-
-mysql_connect($db_host, $db_username, $db_password);
-mysql_select_db($db_database) or die(mysql_error());
-mysql_query("SET NAMES 'utf8'") or die(mysql_error());
 
 $email = isset($_GET['email'])? $_GET['email'] : null;
 $code  = isset($_GET['code'])? $_GET['code'] : null;
@@ -18,7 +13,7 @@ $res = @mysql_query('SELECT * FROM Authors WHERE Email=\''.mysql_real_escape_Str
 $row = mysql_fetch_assoc($res);
 if($row)
 {
-	if($row['VerifyCode'] === $code)
+	if($code !== null && $row['VerifyCode'] === $code)
 	{
 		//We have a valid code, set session
 		$session = sha1($email.$code.rand().time());

@@ -97,7 +97,7 @@ else
 		if($verificationCode === TRUE)
 		{
 			require_once('../shared.php');
-			GenerateAndSendVerificationCode($commentEmail, $pageUrl);
+			GenerateAndSendVerificationCode($commentEmail, siteUrl.pagePath);
 		}
 		echo '<div class="commentOk">Comment awaits your verification, check your email</div>';
 	}

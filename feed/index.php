@@ -7,7 +7,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>
 ';
 
 require_once("../shared.php");
-
+GetSiteConstants();
 if(urlError)
 {
 	header("HTTP/1.1 404 Not Found");
@@ -25,12 +25,12 @@ $siteAuthor = "John Doe";
 echo '
 	<title>'.htmlentities($siteName).'</title>
 	<link href="'.htmlentities($siteBaseUrl).'"/>
-	<link href="'.service_url.'/feed.php?sid='.siteID.'&amp;url='.urlencode($pageUrl).'" rel="self"/>
+	<link href="'.service_url.'/feed.php?sid='.siteID.'&amp;url='.urlencode(siteUrl.pagePath).'" rel="self"/>
 	<updated>'.gmdate('Y-m-d\TH:i:s\Z').'</updated>
 	<author>
 		<name>'.htmlentities($siteAuthor).'</name>
 	</author>
-	<id>'.htmlentities($pageUrl).'</id>
+	<id>'.htmlentities(siteUrl.pagePath).'</id>
 ';
 
 // Read comments
@@ -38,7 +38,7 @@ echo '
 $result = @mysql_query('
 	SELECT * FROM Comments
 	WHERE SiteID = '.siteID.'
-	'.($pageUrl === FALSE ? '' : 'AND pageUrl = \''.mysql_real_escape_string($pageUrl).'\'').'
+	AND PagePath = \''.mysql_real_escape_string(pagePath).'\'').'
 	AND VerifiedDate IS NOT NULL
 	ORDER BY CommentDate DESC
 	LIMIT 50
@@ -48,7 +48,7 @@ $result = @mysql_query('
 require_once('../markdown.php');
 
 while ($row = mysql_fetch_assoc($result)) {
-	$link = htmlentities($row['PageUrl']).'#comment'.$row['CommentID'];
+	$link = siteUrl.htmlentities($row['PagePath']).'#comment'.$row['CommentID'];
 	echo '
 	<entry>
 		<title>Comment</title>

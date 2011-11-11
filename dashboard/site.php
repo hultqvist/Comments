@@ -3,6 +3,12 @@
 require_once("../shared.php");
 
 GetSessionConstants();
+
+if(!sessionEmail)
+{
+	header('Location: '.service_url.'/dashboard/');
+	return;
+}
 ?>
 <html>
 <head>
@@ -13,28 +19,27 @@ GetSessionConstants();
 <body>
 <article>
 <?php
-if(sessionEmail)
-{
 	echo '<h1>'.htmlentities(sessionEmail).' <a href="'.service_url.'/logout/">logout</a></h1>';
 
+	$sid=intval($_GET['sid']);
+
 	//Sites
-	$result = @mysql_query('SELECT * FROM Sites WHERE AdminEmail=\''.mysql_real_escape_string(sessionEmail).'\'')
+	$result = @mysql_query('SELECT * FROM Sites WHERE AdminEmail=\''.mysql_real_escape_string(sessionEmail).'\' AND SiteID='.$sid)
 	 or die(mysql_error());
-	echo '<ul>';
-	while ($row = mysql_fetch_assoc($result)) {
-		echo '<li>';
-		echo '<a href="site.php?sid='.$row['SiteID'].'">'.htmlentities($row['SiteUrl']).'</a>';
-		echo '</li>';
+	$row = mysql_fetch_assoc($result);
+	if(!$row) {
+		echo 'No site with sid='.$sid;
+		return;
 	}
-	echo '</ul>';
+
+	$siteUrl = htmlentities($row['SiteUrl']);
+	echo '<a href="'.$siteUrl.'">'.$siteUrl.'</a>';
 
 	//Comments
 	$result = @mysql_query('
-		SELECT Comments.*, Sites.SiteUrl FROM Comments
-		JOIN Sites on Comments.SiteID=Sites.SiteID
-		WHERE CommentEmail=\''.mysql_real_escape_string(sessionEmail).'\'
-	')
-	 or die(mysql_error());
+		SELECT * FROM Comments
+		WHERE SiteID='.$sid)
+	or die(mysql_error());
 
 	require_once('../markdown.php');
 
@@ -44,36 +49,19 @@ if(sessionEmail)
 		echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($row['CommentEmail']))).'?s=40&d=identicon">';
 		if($row['VerifiedDate'] === null)
 		{
-			echo '<strong>(unverified: '.htmlentities($row['CommentIP']).')</strong>';
+			echo '<strong>(unverified: '.htmlentities($row['CommentIP']).')</strong> ';
 			echo '<a href="'.service_url.'/verify/?cid='.$row['CommentID'].'">verify</a> ';
 			echo '<a href="'.service_url.'/delete/?cid='.$row['CommentID'].'">delete</a> ';
 		}
 		echo '<span>'.$row['CommentDate'].'</span></div>';
-		$url = htmlentities($row['SiteUrl'].$row['PagePath']);
+		$url = $siteUrl.htmlentities($row['PagePath']);
 		echo '<div><a href="'.$url.'">'.$url.'</a></div>';
 		echo Markdown($row['CommentText']);
 		echo '</li>';
 	}
 	echo '</ul>';
 
-
-mysql_close();
-
-}
-else
-{
-?>
-	<h1>Not logged in</h1>
-	<form action="<?php echo service_url;?>/authorize" method="GET">
-	<div>
-		E-mail:
-		<input type="text" name="email" />
-		<input type="submit" value="Send me authorization link" />
-	</div>
-	</form>
-<?php
-}
-
+	mysql_close();
 ?>
 </article>
 </body>
