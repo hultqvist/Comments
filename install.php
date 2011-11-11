@@ -9,9 +9,9 @@ mysql_select_db($db_database) or die(mysql_error());
 mysql_query("SET NAMES 'utf8'")
  or die(mysql_error());
 
-mysql_query('DROP TABLE Comments;') or print(mysql_error());
-mysql_query('DROP TABLE Sites;') or print(mysql_error());
-mysql_query('DROP TABLE Authors;') or print(mysql_error());
+//mysql_query('DROP TABLE Comments;') or print(mysql_error());
+//mysql_query('DROP TABLE Sites;') or print(mysql_error());
+//mysql_query('DROP TABLE Authors;') or print(mysql_error());
 
 mysql_query('CREATE TABLE Comments (
 	CommentID INT NOT NULL auto_increment,
@@ -35,7 +35,7 @@ mysql_query('CREATE TABLE Sites (
 ) DEFAULT CHARSET=utf8')
  or print(mysql_error());
 
-mysql_query('INSERT INTO Sites (SiteUrl,AdminEmail) VALUES (\''.mysql_real_escape_string(service_url).'\',\''.mysql_real_escape_string(service_email).'\')')
+mysql_query('INSERT INTO Sites (SiteID, SiteUrl,AdminEmail) VALUES (1, \''.mysql_real_escape_string(service_url).'\',\''.mysql_real_escape_string(service_email).'\')')
  or print(mysql_error());
 
 mysql_query('CREATE TABLE Authors (
@@ -49,7 +49,5 @@ mysql_query('CREATE TABLE Authors (
 
 mysql_query('INSERT INTO Authors (Email,VerifyDate) VALUES (\''.mysql_real_escape_string(service_email).'\',NOW())')
  or print(mysql_error());
-
-
 
 mysql_close();
