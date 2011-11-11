@@ -29,8 +29,8 @@
 		if($row['VerifiedDate'] === null)
 		{
 			echo '<strong>(unverified: '.htmlentities($row['CommentIP']).')</strong>';
-			echo '<a href="'.service_url.'/verify/?cid='.$row['CommentID'].'">verify</a> ';
-			echo '<a href="'.service_url.'/delete/?cid='.$row['CommentID'].'">delete</a> ';
+			echo '<a href="?verify='.$row['CommentID'].'">verify</a> ';
+			echo '<a href="?delete='.$row['CommentID'].'">delete</a> ';
 		}
 		echo '<span>'.$row['CommentDate'].'</span></div>';
 		$url = htmlentities($row['SiteUrl'].$row['PagePath']);

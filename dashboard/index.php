@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: text/html');
 
 require_once("../shared.php");
 
@@ -16,11 +17,15 @@ GetSessionConstants();
 	<a href="?">Start</a>
 </div>
 <?php
-if(sessionEmail)
+if(sessionEmail !== null)
 {
 	echo '<h1>'.htmlentities(sessionEmail).' <a href="'.service_url.'/logout/">logout</a></h1>';
 
-	if(isset($_GET['sid']))
+	if(isset($_GET['verify']))
+		require('verify.php');
+	elseif(isset($_GET['delete']))
+		require('delete.php');
+	elseif(isset($_GET['sid']))
 		require('site.php');
 	else
 		require('main.php');

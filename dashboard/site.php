@@ -1,5 +1,5 @@
 <?php
-	if(!sessionEmail)
+	if(sessionEmail === null)
 		return;
 
 	$sid=intval($_GET['sid']);
@@ -36,9 +36,9 @@
 		if($row['VerifiedDate'] === null)
 		{
 			echo '<strong>(unverified)</strong> ';
-			echo '<a href="'.service_url.'/verify/?cid='.$row['CommentID'].'">verify</a> ';
+			echo '<a href="?verify='.$row['CommentID'].'">verify</a> ';
 		}
-		echo '<a href="'.service_url.'/delete/?cid='.$row['CommentID'].'">delete</a> ';
+		echo '<a href="?delete='.$row['CommentID'].'">delete</a> ';
 		echo '<span>'.$row['CommentDate'].'</span></div>';
 		$url = $siteUrl.htmlentities($row['PagePath']);
 		echo '<div><a href="'.$url.'">'.$url.'</a></div>';
