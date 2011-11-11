@@ -10,6 +10,7 @@ GetSessionConstants();
 	<meta charset="UTF-8" />
 	<title>Comment Dashboard</title>
 	<link rel="stylesheet" href="../style.css" type="text/css" />
+	<link rel="stylesheet" href="../comments/style.css" type="text/css" />
 </head>
 <body>
 <header>

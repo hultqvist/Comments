@@ -10,20 +10,10 @@
 
 	require_once('../markdown.php');
 
+	echo '<div id="comments">';
 	echo '<ul>';
 	while ($row = mysql_fetch_assoc($result)) {
-		echo '<li id="comment'.$row['CommentID'].'">';
-		echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($row['CommentEmail']))).'?s=40&d=identicon">';
-		if($row['VerifiedDate'] === null)
-		{
-			echo '<strong>(unverified: '.htmlentities($row['CommentIP']).')</strong>';
-			echo '<a href="?verify='.$row['CommentID'].'">verify</a> ';
-			echo '<a href="?delete='.$row['CommentID'].'">delete</a> ';
-		}
-		echo '<span>'.$row['CommentDate'].'</span></div>';
-		$url = htmlentities($row['SiteUrl'].$row['PagePath']);
-		echo '<div><a href="'.$url.'">'.$url.'</a></div>';
-		echo Markdown($row['CommentText']);
-		echo '</li>';
+		PrintComment($row);
 	}
 	echo '</ul>';
+	echo '</div>';

@@ -19,13 +19,12 @@ if(urlError)
 GetSessionConstants();
 
 // Read comments
-$result = @mysql_query('
-	SELECT * FROM Comments
+$query='SELECT * FROM Comments
 	WHERE SiteID = '.siteID.'
-	AND PagePath = \''.mysql_real_escape_string(pagePath).'\'
-	AND VerifiedDate IS NOT NULL
-')
- or die(mysql_error());
+	AND PagePath = \''.mysql_real_escape_string(pagePath).'\'';
+if(!sessionEmail || sessionEmail !== siteAdminEmail)
+	$query .= ' AND VerifiedDate IS NOT NULL';
+$result = @mysql_query($query) or die(mysql_error());
 
 //Style
 echo '<style type="text/css">';
@@ -33,7 +32,7 @@ require('style.css');
 echo '</style>';
 
 //Feed icon
-echo '<a href="'.service_url.'/feed/?sid='.siteID.'&url='.urlencode(siteUrl.pagePath).'">Comment feed</a>';
+echo '<div class="commentFeed"><a href="'.service_url.'/feed/?sid='.siteID.'&url='.urlencode(siteUrl.pagePath).'"><img src="'.service_url.'/feed.png" /></a></div>';
 
 	$count = mysql_num_rows($result);
 	if($count === 0)
@@ -47,11 +46,7 @@ echo '<a href="'.service_url.'/feed/?sid='.siteID.'&url='.urlencode(siteUrl.page
 
 	echo '<ul>';
 	while ($row = mysql_fetch_assoc($result)) {
-		echo '<li id="comment'.$row['CommentID'].'">';
-		echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($row['CommentEmail']))).'?s=40&d=identicon">';
-		echo '<span>'.date('Y-m-d H:i', strtotime($row['CommentDate'])).'</span></div>';
-		echo Markdown($row['CommentText']);
-		echo '</li>';
+		PrintComment($row);
 	}
 	echo '</ul>';
 
@@ -59,11 +54,8 @@ mysql_close();
 
 // Comment Form
 if(isset($_GET['form'])){?>
-<div id="commentForm">
-	<h1>Post your comment here</h1>
-	<form action="<?php echo service_url.'/script.php?sid='.siteID.'&url='.urlencode(siteUrl.pagePath);?>" method="post" onsubmit="return commentPost();">
+<form id="commentForm" action="<?php echo service_url.'/script.php?sid='.siteID.'&url='.urlencode(siteUrl.pagePath);?>" method="post" onsubmit="return commentPost();">
 	<textarea id="commentText" name="commentText"></textarea><br/>
-	<div id="commentStatus"></div>
 	<div>Your e-mail address for verification:<?php
 	if(sessionEmail)
 	{
@@ -75,7 +67,7 @@ if(isset($_GET['form'])){?>
 		if(isset($_COOKIE['email']))
 			echo $_COOKIE['email']; ?>"/>
 	<input type="submit" value="Post comment" />
-	</form>
-</div>
+	<div id="commentStatus"></div>
+</form>
 <?php
 }

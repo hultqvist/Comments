@@ -7,8 +7,37 @@ mysql_connect($db_host, $db_username, $db_password);
 mysql_select_db($db_database) or die(mysql_error());
 mysql_query("SET NAMES 'utf8'") or die(mysql_error());
 
+function PrintComment($row)
+{
+	if($row['VerifiedDate'] === null)
+		echo '<li id="comment'.$row['CommentID'].'" class="unverified">';
+	else
+		echo '<li id="comment'.$row['CommentID'].'">';
+	echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($row['CommentEmail']))).'?s=40&d=identicon">';
+	echo '<span>'.date('Y-m-d H:i', strtotime($row['CommentDate'])).'</span>';
+
+	if(sessionEmail && sessionEmail === siteAdminEmail)
+	{
+		if($row['CommentEmail'] === "")
+			echo '<strong>Anonymous</strong> ';
+		else
+			echo htmlentities($row['CommentEmail']);
+		echo '('.htmlentities($row['CommentIP']).') ';
+		if($row['VerifiedDate'] === null)
+		{
+			echo '<strong>(unverified)</strong> ';
+			echo '<a href="'.service_url.'/dashboard/?verify='.$row['CommentID'].'">verify</a> ';
+		}
+		echo '<a href="'.service_url.'/dashboard/?delete='.$row['CommentID'].'">delete</a> ';
+	}
+
+	echo '</div>';
+	echo Markdown($row['CommentText']);
+	echo '</li>';
+}
+
 //Page URL checks and normalization
-function GetSiteConstants()
+function GetSiteConstants($checkReferer = TRUE)
 {
 	//SiteID
 	if(isset($_GET['sid']) === FALSE)
@@ -19,19 +48,23 @@ function GetSiteConstants()
 	$sid = intval($_GET['sid']);
 
 	//Page URL
-	if(isset($_SERVER['HTTP_REFERER']))
-		$url = $_SERVER['HTTP_REFERER'];
-	else
-	{
-		define("urlError", 'Missing referer');
-		return;
+	if($checkReferer){
+		if(isset($_SERVER['HTTP_REFERER']))
+			$url = $_SERVER['HTTP_REFERER'];
+		else
+		{
+			define("urlError", 'Missing referer');
+			return;
+		}
 	}
-	if(isset($_GET['url']))
-		$url = $_GET['url'];
-	if(filter_var($url, FILTER_VALIDATE_URL) === FALSE)
-	{
-		define("urlError", 'Invalid url: '.htmlentities($url));
-		return;
+	if($checkReferer){
+		if(isset($_GET['url']))
+			$url = $_GET['url'];
+		if(filter_var($url, FILTER_VALIDATE_URL) === FALSE)
+		{
+			define("urlError", 'Invalid url: '.htmlentities($url));
+			return;
+		}
 	}
 
 	//Verify pageUrl and referer
@@ -44,21 +77,23 @@ function GetSiteConstants()
 		return;
 	}
 	$siteUrl = parse_url(rtrim($row['SiteUrl'], "/"));
-	$pageUrl = parse_url(rtrim($url, "/"));
-	if($pageUrl['host'] != $siteUrl['host'] || strpos($pageUrl['path'], $siteUrl['path']) !== 0)
-	{
-		define("urlError", 'Wrong url of page: '.htmlentities($url).' expected: '.htmlentities($row['SiteUrl']));
-		return;
-	}
-	$refUrl = parse_url($_SERVER['HTTP_REFERER']);
-	if($refUrl['host'] != $siteUrl['host'] || strpos($refUrl['path'], $siteUrl['path']) !== 0)
-	{
-		define("urlError", 'Wrong referer: '.htmlentities($_SERVER['HTTP_REFERER']).' expected: '.htmlentities($row['SiteUrl']));
-		return;
+	if($checkReferer){
+		$pageUrl = parse_url(rtrim($url, "/"));
+		if($pageUrl['host'] != $siteUrl['host'] || strpos($pageUrl['path'], $siteUrl['path']) !== 0)
+		{
+			define("urlError", 'Wrong url of page: '.htmlentities($url).' expected: '.htmlentities($row['SiteUrl']));
+			return;
+		}
+		$refUrl = parse_url($_SERVER['HTTP_REFERER']);
+		if($refUrl['host'] != $siteUrl['host'] || strpos($refUrl['path'], $siteUrl['path']) !== 0)
+		{
+			define("urlError", 'Wrong referer: '.htmlentities($_SERVER['HTTP_REFERER']).' expected: '.htmlentities($row['SiteUrl']));
+			return;
+		}
+		define("pagePath", substr($pageUrl['path'], strlen($siteUrl['path'])));
 	}
 	define("urlError", FALSE);
 	define("siteID", $sid);
-	define("pagePath", substr($pageUrl['path'], strlen($siteUrl['path'])));
 	define("siteAdminEmail", $row['AdminEmail']);
 	define("siteUrl", $row['SiteUrl']);
 }

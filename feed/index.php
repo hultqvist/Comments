@@ -7,7 +7,7 @@ echo '<?xml version="1.0" encoding="utf-8"?>
 ';
 
 require_once("../shared.php");
-GetSiteConstants();
+GetSiteConstants(false);
 if(urlError)
 {
 	header("HTTP/1.1 404 Not Found");
@@ -35,10 +35,9 @@ echo '
 
 // Read comments
 
-$result = @mysql_query('
-	SELECT * FROM Comments
+$result = mysql_query('SELECT * FROM Comments
 	WHERE SiteID = '.siteID.'
-	AND PagePath = \''.mysql_real_escape_string(pagePath).'\'').'
+	AND PagePath = \''.mysql_real_escape_string(pagePath).'\'
 	AND VerifiedDate IS NOT NULL
 	ORDER BY CommentDate DESC
 	LIMIT 50

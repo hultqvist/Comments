@@ -1,15 +1,18 @@
 <?php
-	if(sessionEmail === null)
+	if(!sessionEmail)
 		return;
 
-	$sid=intval($_GET['sid']);
+	GetSiteConstants(FALSE);
+
+	if(urlError)
+		echo urlError;
 
 	//Sites
-	$result = @mysql_query('SELECT * FROM Sites WHERE AdminEmail=\''.mysql_real_escape_string(sessionEmail).'\' AND SiteID='.$sid)
+	$result = @mysql_query('SELECT * FROM Sites WHERE AdminEmail=\''.mysql_real_escape_string(sessionEmail).'\' AND SiteID='.siteID)
 	 or die(mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if(!$row) {
-		echo 'No site with sid='.$sid;
+		echo 'No site with sid='.siteID;
 		return;
 	}
 
@@ -29,31 +32,16 @@
 	echo '<h1>Comments</h1>';
 	$result = @mysql_query('
 		SELECT * FROM Comments
-		WHERE SiteID='.$sid)
+		WHERE SiteID='.siteID)
 	or die(mysql_error());
 
 	require_once('../markdown.php');
 
+	echo '<div id="comments">';
 	echo '<ul>';
 	while ($row = mysql_fetch_assoc($result)) {
-		echo '<li id="comment'.$row['CommentID'].'" class="'.($row['VerifiedDate'] === null?'unverified':'').'">';
-		echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($row['CommentEmail']))).'?s=40&d=identicon"> ';
-		if($row['CommentEmail'] === "")
-			echo '<strong>Anonymous</strong> ';
-		else
-			echo htmlentities($row['CommentEmail']);
-		echo '('.htmlentities($row['CommentIP']).') ';
-		if($row['VerifiedDate'] === null)
-		{
-			echo '<strong>(unverified)</strong> ';
-			echo '<a href="?verify='.$row['CommentID'].'">verify</a> ';
-		}
-		echo '<a href="?delete='.$row['CommentID'].'">delete</a> ';
-		echo '<span>'.$row['CommentDate'].'</span></div>';
-		$url = $siteUrl.htmlentities($row['PagePath']);
-		echo '<div><a href="'.$url.'">'.$url.'</a></div>';
-		echo Markdown($row['CommentText']);
-		echo '</li>';
+		PrintComment($row);
 	}
 	echo '</ul>';
+	echo '</div>';
 

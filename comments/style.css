@@ -6,45 +6,84 @@
 	padding: 0;
 	margin: 0;
 }
-#comments .commentAuthor {
-	background: lightgray;
+.commentAuthor {
+	background: #eee;
+	box-shadow: 0 4px 6px #eee;
+
+	color: #555;
+	border-radius: 5px;
 }
-#comments .commentAuthor img {
+.commentAuthor img {
+	background: #eee;
+	box-shadow: 0 4px 6px #eee;
+
+	float:left;
 	vertical-align:middle;
 	padding: 5px;
+	height:40px;
+	border-radius: 5px;
+	margin-right: 5px;
 }
+.unverified .commentAuthor {background: gold;}
+
+.commentFeed{
+	float:right;
+	vertical-align:middle;
+}
+.commentFeed img{vertical-align:middle;}
+.commentFeed a{text-decoration:none;}
 
 .commentOk,
 .commentError {
 	padding: 2em;
+	color: #000;
+	margin: 5px;
 }
 .commentOk {
 	background: lightgreen;
+	border-radius: 1em;
 }
 .commentError {
 	background: red;
 }
 
 #commentForm{
-	background: lightgray;
+	background: #eee;
+	box-shadow: 0 4px 6px #eee;
+	border: 1px solid gray;
+	border-radius: 0.5em;
 	padding: 10px;
+	color: #999;
+}
+
+#commentForm textarea,
+#commentForm input{
+	box-sizing: border-box;
+	padding: 10px;
+	margin: 0;
+	border: 1px dotted gray;
+	border-top: 3px solid #777;
+	box-shadow: inset 0 4px 60px #eee;
 }
 
 #commentForm textarea{
-	width: 568px;
-	border: 1px solid gray;
-	padding: 5px;
-	margin: 0;
+	width: 100%;
 	height: 8em;
 }
 
 #commentForm input{
-	width: 378px;
-	padding: 10px;
-	margin: 0 10px 0 0;
-	border: 1px solid gray;
+	width: 67%;
 }
 #commentForm input[type=submit]{
-	width: 165px;
-	margin: 0;
+	float:right;
+	width: 30%;
+border: 1px solid darkgreen;
+background-color: green;
+border-radius: 4px;
+box-shadow: inset 1px 6px 12px lightgreen, inset -1px -10px 5px darkgreen, 1px 2px 1px black;
+color: white;
+text-shadow: 1px 1px 1px black;
+}
+#commentForm input[type=submit]:hover{
+	background: #afd;
 }
