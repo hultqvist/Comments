@@ -14,6 +14,11 @@ function PrintComment($row)
 	else
 		echo '<li id="comment'.$row['CommentID'].'">';
 	echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($row['CommentEmail']))).'?s=40&d=identicon">';
+	if(isset($row['SiteUrl']))
+	{
+		$url=htmlentities($row['SiteUrl'].$row['PagePath']);
+		echo '<div><a href="'.$url.'">'.$url.'</a></div>';
+	}
 	echo '<span>'.date('Y-m-d H:i', strtotime($row['CommentDate'])).'</span> ';
 
 	if(sessionEmail && (sessionEmail === siteAdminEmail || sessionEmail === $row['CommentEmail']))
@@ -27,8 +32,10 @@ function PrintComment($row)
 			echo ' <em>('.htmlentities($row['CommentIP']).')</em>';
 			echo ' <strong>(unverified)</strong>';
 			echo ' <a href="'.service_url.'/dashboard/?verify='.$row['CommentID'].'">verify</a>';
+			if(sessionEmail == $row['CommentEmail'])
+				echo ' <a href="'.service_url.'/dashboard/?delete='.$row['CommentID'].'">delete</a>';
 		}
-		if(sessionEmail === siteAdminEmail)
+		elseif(sessionEmail === siteAdminEmail)
 			echo ' <a href="'.service_url.'/dashboard/?delete='.$row['CommentID'].'">delete</a>';
 	}
 
@@ -57,8 +64,6 @@ function GetSiteConstants($checkReferer = TRUE)
 			define("urlError", 'Missing referer');
 			return;
 		}
-	}
-	if($checkReferer){
 		if(isset($_GET['url']))
 			$url = $_GET['url'];
 		if(filter_var($url, FILTER_VALIDATE_URL) === FALSE)
@@ -85,11 +90,15 @@ function GetSiteConstants($checkReferer = TRUE)
 			define("urlError", 'Wrong url of page: '.htmlentities($url).' expected: '.htmlentities($row['SiteUrl']));
 			return;
 		}
+		$serviceUrl = parse_url(service_url);
 		$refUrl = parse_url($_SERVER['HTTP_REFERER']);
-		if($refUrl['host'] != $siteUrl['host'] || strpos($refUrl['path'], $siteUrl['path']) !== 0)
+		if($refUrl['host'] != $serviceUrl['host'] || strpos($refUrl['path'], $serviceUrl['path']) !== 0)
 		{
-			define("urlError", 'Wrong referer: '.htmlentities($_SERVER['HTTP_REFERER']).' expected: '.htmlentities($row['SiteUrl']));
-			return;
+			if($refUrl['host'] != $siteUrl['host'] || strpos($refUrl['path'], $siteUrl['path']) !== 0)
+			{
+				define("urlError", 'Wrong referer: '.htmlentities($_SERVER['HTTP_REFERER']).' expected: '.htmlentities($row['SiteUrl']));
+				return;
+			}
 		}
 		define("pagePath", substr($pageUrl['path'], strlen($siteUrl['path'])));
 	}

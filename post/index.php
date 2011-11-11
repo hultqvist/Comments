@@ -11,6 +11,9 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 require_once('../shared.php');
 GetSiteConstants();
 
+if(!isset($_REQUEST['ajax']))
+	echo '<div><a href="'.service_url.'/comments/?sid='.siteID.'&url='.htmlentities(siteUrl.pagePath).'&form">back</a></div>';
+
 if(urlError)
 {
 	echo '<div class="commentError">'.urlError.'</div>';

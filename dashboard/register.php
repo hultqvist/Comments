@@ -17,7 +17,7 @@ if(isset($_POST['register']) === FALSE)
 if(sessionEmail == null)
 	return;
 
-$url = $_POST['register'];
+$url = rtrim($_POST['register'], "/");
 if(filter_var($url, FILTER_VALIDATE_URL) === FALSE)
 {
 	echo '<div class="commentError">Invalid url: '.htmlentities($url).'</div>';

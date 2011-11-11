@@ -48,7 +48,8 @@ function commentPost()
 	};
 	req.open('POST', '<?php echo service_url; ?>/post/?<?php echo $urlParam; ?>', true);
 	var parameters = 'commentText='+encodeURI(document.getElementById('commentText').value)+
-		'&commentEmail='+encodeURI(document.getElementById('commentEmail').value);
+		'&commentEmail='+encodeURI(document.getElementById('commentEmail').value)+
+		'&ajax';
 	req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 	//req.setRequestHeader("Content-Length", parameters.length);
 	req.send(parameters);

@@ -1,11 +1,20 @@
 # Comments
 
-Simple comment system added to any static or dynamic html site with only 2 lines of html code.
+Simple comment system that you can host yourself using PHP and MySql.
 
-    <div id="comments">Loading comments...</div>
+Simply add something like the following 2 lines to any static html page.
+
+    <div id="comments"></div>
     <script type="text/javascript" src="https://silentorbit.com/comments/script/?sid=1"><script>
 
-You can host it yourself using PHP and MySql or use one hosted elsewhere.
+To also support when javascript is disabled use add the following code:
+
+    <noscript>
+        <object data="https://silentorbit.com/comments/comments/?sid=1&form" width="600" height="500" />
+    </noscript>
+
+For this to work you must have registered your site and be given a site id(sid) as seen being used in the code.
+This makes it possible for as site owner to allow anonymous comments and delete comments of others.
 
 ## Source Code
 

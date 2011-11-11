@@ -54,7 +54,7 @@ mysql_close();
 
 // Comment Form
 if(isset($_GET['form'])){?>
-<form id="commentForm" action="<?php echo service_url.'/script.php?sid='.siteID.'&url='.urlencode(siteUrl.pagePath);?>" method="post" onsubmit="return commentPost();">
+<form id="commentForm" action="<?php echo service_url.'/post/?sid='.siteID.'&url='.urlencode(siteUrl.pagePath);?>" method="post" onsubmit="return commentPost();">
 	<textarea id="commentText" name="commentText"></textarea><br/>
 	<div>Your e-mail address for verification:<?php
 	if(sessionEmail)

@@ -1,4 +1,6 @@
 <?php
+	define("siteAdminEmail", null);
+
 	//Comments
 	echo '<h1>Your comments</h1>';
 	$result = @mysql_query('
