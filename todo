@@ -1,17 +1,12 @@
-script.php
-	local cache
-	http cache?
+Anonymous comments
 
-Site admin interface
-	Manage comments from the original post.
+Site admin
+	Delete comments
+	Verify comments
 
-Verification
-	Only send one verification mail per email address
-	Once clicked the link
-		Set authentication cookie
-		Show logout link
-		Show the unverified posts
-		Choose which comments to verify
-		Subscribe to comments by email
-		Register a new site
+Service admin
+	Purge old unverified comments
 
+Dashboard
+	Subscribe to comments
+	Register a new site

@@ -11,7 +11,7 @@ $db_password = "password";
 $db_database = "database";
 
 //Base url for the service
-$service_url = "http://example.com/comments";
+define("service_url", "http://example.com/comments");
 //From address in verification emails
-$service_email = "webmaster@example.com";
+define("service_email", "webmaster@example.com");
 

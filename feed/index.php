@@ -7,26 +7,29 @@ echo '<?xml version="1.0" encoding="utf-8"?>
 ';
 
 //Load $siteID and $pageUrl
-require_once('parameters.php');
+require_once('../parameters.php');
 
 //Database and service parameters
-require_once("config.php");
-
-mysql_connect($db_host, $db_username, $db_password);
-mysql_select_db($db_database) or die(mysql_error());
-mysql_query("SET NAMES 'utf8'") or die(mysql_error());
+require_once("../shared.php");
 
 // Read site data
+$siteBaseUrl = service_url;
+$siteName = "Comment Feed";
+$siteAuthor = "John Doe";
+$res = @mysql_query('SELECT SiteUrl FROM Sites WHERE SiteID='.$siteID)
+	or die('<div class="commentError">'.mysql_error().'</div>');
+if(mysql_num_rows($res) !== 1)
+	die('<div class="commentError">No site with sid: '.$siteID.'</div>');
+$row = mysql_fetch_assoc($res);
+if($row)
+	$siteBaseUrl = $row['SiteUrl'];
 
-$siteBaseUrl = "https://silentorbit.com/";
-$siteName = "Silent Orbit";
-$siteAuthor = "Peter Hultqvist";
 // Atom header
 
 echo '
 	<title>'.htmlentities($siteName).'</title>
 	<link href="'.htmlentities($siteBaseUrl).'"/>
-	<link href="'.$service_url.'/feed.php?sid='.$siteID.'&amp;url='.urlencode($pageUrl).'" rel="self"/>
+	<link href="'.service_url.'/feed.php?sid='.$siteID.'&amp;url='.urlencode($pageUrl).'" rel="self"/>
 	<updated>'.gmdate('Y-m-d\TH:i:s\Z').'</updated>
 	<author>
 		<name>'.htmlentities($siteAuthor).'</name>
@@ -46,10 +49,10 @@ $result = @mysql_query('
 ')
  or die(mysql_error());
 
-require_once('markdown.php');
+require_once('../markdown.php');
 
 while ($row = mysql_fetch_assoc($result)) {
-	$link = htmlentities($row['pageUrl']).'#comment'.$row['CommentID'];
+	$link = htmlentities($row['PageUrl']).'#comment'.$row['CommentID'];
 	echo '
 	<entry>
 		<title>Comment</title>

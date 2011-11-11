@@ -30,5 +30,5 @@ header('Content-Type: text/plain');
 ?>
 <!-- Start of comment code -->
 <div id="comments">Loading comments...</div>
-<script type="text/javascript" src="<?php echo $service_url;?>/script.php?sid=<?php echo $id;?>" async="async"></script>
+<script type="text/javascript" src="<?php echo service_url;?>/script.php?sid=<?php echo $id;?>" async="async"></script>
 <!-- End of comment code -->

@@ -16,32 +16,40 @@ mysql_query('DROP TABLE Authors;') or print(mysql_error());
 mysql_query('CREATE TABLE Comments (
 	CommentID INT NOT NULL auto_increment,
 	SiteID INT NOT NULL,
-	PageUrl TINYTEXT NOT NULL,
-	CommentIP TINYTEXT,
-	CommentText text NOT NULL,
+	PageUrl VARCHAR(255) NOT NULL,
+	CommentIP VARBINARY(16) NOT NULL,
+	CommentEmail VARCHAR(255) NOT NULL,
+	CommentText VARCHAR(32767) NOT NULL,
 	CommentDate DATETIME NOT NULL,
-	CommentEmail TINYTEXT,
-	VerificationCode TINYBLOB,
 	VerifiedDate DATETIME,
-	VerifiedIP TINYTEXT,
+	VerifiedIP VARBINARY(16),
 	PRIMARY KEY (CommentID)
-)')
+) DEFAULT CHARSET=utf8')
  or print(mysql_error());
 
 mysql_query('CREATE TABLE Sites (
 	SiteID INT NOT NULL auto_increment,
-	SiteUrl TINYTEXT NOT NULL,
-	AdminAuthorID INT,
+	SiteUrl VARCHAR(255) NOT NULL,
+	AdminEmail VARCHAR(255),
 	PRIMARY KEY (SiteID)
-)')
+) DEFAULT CHARSET=utf8')
+ or print(mysql_error());
+
+mysql_query('INSERT INTO Sites (SiteUrl,AdminEmail) VALUES (\''.mysql_real_escape_string(service_url).'\',\''.mysql_real_escape_string(service_email).'\')')
  or print(mysql_error());
 
 mysql_query('CREATE TABLE Authors (
-	AuthorID INT NOT NULL auto_increment,
-	AuthorEmail TINYTEXT NOT NULL,
-	AuthorCode TINYBLOB,
-	PRIMARY KEY (AuthorID)
-)')
+	Email VARCHAR(255) NOT NULL,
+	VerifyDate DATETIME NOT NULL,
+	VerifyCode VARBINARY(16),
+	Session VARBINARY(40),
+	PRIMARY KEY (Email)
+) DEFAULT CHARSET=utf8')
  or print(mysql_error());
+
+mysql_query('INSERT INTO Authors (Email,VerifyDate) VALUES (\''.mysql_real_escape_string(service_email).'\',NOW())')
+ or print(mysql_error());
+
+
 
 mysql_close();

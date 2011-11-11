@@ -30,13 +30,8 @@ article {
 	padding: 5px;
 }
 
-#commentForm{
-	background: lightgray;
-}
-
 .commentOk,
 .commentError {
-	display: block;
 	padding: 2em;
 }
 .commentOk {
@@ -46,8 +41,13 @@ article {
 	background: red;
 }
 
+#commentForm{
+	background: lightgray;
+	padding: 10px;
+}
+
 #commentForm textarea{
-	width: 588px;
+	width: 568px;
 	border: 1px solid gray;
 	padding: 5px;
 	margin: 0;
@@ -61,7 +61,6 @@ article {
 	border: 1px solid gray;
 }
 #commentForm input[type=submit]{
-	width: 190px;
-	padding: 10px;
+	width: 165px;
 	margin: 0;
 }
