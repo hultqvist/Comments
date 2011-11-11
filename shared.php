@@ -14,21 +14,22 @@ function PrintComment($row)
 	else
 		echo '<li id="comment'.$row['CommentID'].'">';
 	echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($row['CommentEmail']))).'?s=40&d=identicon">';
-	echo '<span>'.date('Y-m-d H:i', strtotime($row['CommentDate'])).'</span>';
+	echo '<span>'.date('Y-m-d H:i', strtotime($row['CommentDate'])).'</span> ';
 
-	if(sessionEmail && sessionEmail === siteAdminEmail)
+	if(sessionEmail && (sessionEmail === siteAdminEmail || sessionEmail === $row['CommentEmail']))
 	{
 		if($row['CommentEmail'] === "")
-			echo '<strong>Anonymous</strong> ';
-		else
+			echo '<strong>Anonymous</strong>';
+		elseif(sessionEmail != $row['CommentEmail'])
 			echo htmlentities($row['CommentEmail']);
-		echo '('.htmlentities($row['CommentIP']).') ';
 		if($row['VerifiedDate'] === null)
 		{
-			echo '<strong>(unverified)</strong> ';
-			echo '<a href="'.service_url.'/dashboard/?verify='.$row['CommentID'].'">verify</a> ';
+			echo ' <em>('.htmlentities($row['CommentIP']).')</em>';
+			echo ' <strong>(unverified)</strong>';
+			echo ' <a href="'.service_url.'/dashboard/?verify='.$row['CommentID'].'">verify</a>';
 		}
-		echo '<a href="'.service_url.'/dashboard/?delete='.$row['CommentID'].'">delete</a> ';
+		if(sessionEmail === siteAdminEmail)
+			echo ' <a href="'.service_url.'/dashboard/?delete='.$row['CommentID'].'">delete</a>';
 	}
 
 	echo '</div>';
