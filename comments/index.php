@@ -61,7 +61,10 @@ if(isset($_GET['form'])){?>
 	<div id="commentStatus"></div>
 	<div>Your e-mail address for verification:<?php
 	if(sessionEmail)
+	{
+		echo ' <a href="'.service_url.'/dashboard/">dashboard</a>';
 		echo ' <a href="'.service_url.'/logout/">logout</a>';
+	}
 ?></div>
 	<input type="text" id="commentEmail" name="commentEmail" value="<?php
 		if(isset($_COOKIE['email']))

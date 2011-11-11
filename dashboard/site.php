@@ -1,25 +1,6 @@
 <?php
-
-require_once("../shared.php");
-
-GetSessionConstants();
-
-if(!sessionEmail)
-{
-	header('Location: '.service_url.'/dashboard/');
-	return;
-}
-?>
-<html>
-<head>
-	<meta charset="UTF-8" />
-	<title>Comment Dashboard</title>
-	<link rel="stylesheet" href="../style.css" type="text/css" />
-</head>
-<body>
-<article>
-<?php
-	echo '<h1>'.htmlentities(sessionEmail).' <a href="'.service_url.'/logout/">logout</a></h1>';
+	if(!sessionEmail)
+		return;
 
 	$sid=intval($_GET['sid']);
 
@@ -45,14 +26,19 @@ if(!sessionEmail)
 
 	echo '<ul>';
 	while ($row = mysql_fetch_assoc($result)) {
-		echo '<li id="comment'.$row['CommentID'].'">';
-		echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($row['CommentEmail']))).'?s=40&d=identicon">';
+		echo '<li id="comment'.$row['CommentID'].'" class="'.($row['VerifiedDate'] === null?'unverified':'').'">';
+		echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($row['CommentEmail']))).'?s=40&d=identicon"> ';
+		if($row['CommentEmail'] === "")
+			echo '<strong>Anonymous</strong> ';
+		else
+			echo htmlentities($row['CommentEmail']);
+		echo '('.htmlentities($row['CommentIP']).') ';
 		if($row['VerifiedDate'] === null)
 		{
-			echo '<strong>(unverified: '.htmlentities($row['CommentIP']).')</strong> ';
+			echo '<strong>(unverified)</strong> ';
 			echo '<a href="'.service_url.'/verify/?cid='.$row['CommentID'].'">verify</a> ';
-			echo '<a href="'.service_url.'/delete/?cid='.$row['CommentID'].'">delete</a> ';
 		}
+		echo '<a href="'.service_url.'/delete/?cid='.$row['CommentID'].'">delete</a> ';
 		echo '<span>'.$row['CommentDate'].'</span></div>';
 		$url = $siteUrl.htmlentities($row['PagePath']);
 		echo '<div><a href="'.$url.'">'.$url.'</a></div>';
@@ -61,8 +47,3 @@ if(!sessionEmail)
 	}
 	echo '</ul>';
 
-	mysql_close();
-?>
-</article>
-</body>
-</html>

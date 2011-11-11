@@ -9,6 +9,10 @@ article {
 	padding: 1em 3em;
 }
 
+.unverified{
+	background: yellow;
+}
+
 #comments {
 	width: 600px;
 	margin: 0 auto;
