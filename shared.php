@@ -32,8 +32,7 @@ function PrintComment($row)
 			echo ' <em>('.htmlentities($row['CommentIP']).')</em>';
 			echo ' <strong>(unverified)</strong>';
 			echo ' <a href="'.service_url.'/dashboard/?verify='.$row['CommentID'].'">verify</a>';
-			if(sessionEmail == $row['CommentEmail'])
-				echo ' <a href="'.service_url.'/dashboard/?delete='.$row['CommentID'].'">delete</a>';
+			echo ' <a href="'.service_url.'/dashboard/?delete='.$row['CommentID'].'">delete</a>';
 		}
 		elseif(sessionEmail === siteAdminEmail)
 			echo ' <a href="'.service_url.'/dashboard/?delete='.$row['CommentID'].'">delete</a>';
