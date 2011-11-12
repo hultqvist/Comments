@@ -58,7 +58,6 @@
 
 #commentForm textarea,
 #commentForm input{
-	box-sizing: border-box;
 	padding: 10px;
 	margin: 0;
 	border: 1px dotted gray;
@@ -67,23 +66,23 @@
 }
 
 #commentForm textarea{
-	width: 100%;
+	width: 96%;
 	height: 8em;
 }
 
 #commentForm input{
-	width: 67%;
+	width: 65%;
 }
 #commentForm input[type=submit]{
 	float:right;
-	width: 30%;
+	width: 28%;
 border: 1px solid darkgreen;
 background-color: green;
 border-radius: 4px;
-box-shadow: inset 1px 6px 12px lightgreen, inset -1px -10px 5px darkgreen, 1px 2px 1px black;
+box-shadow: inset 1px 3px 12px lightgreen, inset -1px -5px 5px darkgreen, 1px 2px 1px black;
 color: white;
 text-shadow: 1px 1px 1px black;
 }
 #commentForm input[type=submit]:hover{
-	background: #afd;
+	background: #4a4;
 }

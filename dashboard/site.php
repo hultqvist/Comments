@@ -23,7 +23,7 @@
 	echo '<h1>HTML code</h1>';
 	echo '<p>Put the following code on every page you want comments</p>';
 	echo '<code>';
-	echo htmlentities('<div id="comments">Loading comments...</div>
+	echo htmlentities('<div id="comments"></div>
 <script type="text/javascript" src="'.service_url.'/script/?sid='.siteID.'" async="async"></script>
 <noscript><object data="https://silentorbit.com/comments/comments/?sid='.siteID.'&form" width="600" height="500" /></noscript>');
 	echo '</code>';
