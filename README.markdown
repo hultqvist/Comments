@@ -5,12 +5,12 @@ Simple comment system that you can host yourself using PHP and MySql.
 Simply add something like the following 2 lines to any static html page.
 
     <div id="comments"></div>
-    <script type="text/javascript" src="https://silentorbit.com/comments/script/?sid=1"><script>
+    <script type="text/javascript" src="http://silentorbit.com/comments/script/?sid=1"><script>
 
 To also support when javascript is disabled use add the following code:
 
     <noscript>
-        <object data="https://silentorbit.com/comments/comments/?sid=1&form" width="600" height="500" />
+        <object data="http://silentorbit.com/comments/comments/?sid=1&form" width="600" height="500" />
     </noscript>
 
 For this to work you must have registered your site and be given a site id(sid) as seen being used in the code.
@@ -18,7 +18,7 @@ This makes it possible for as site owner to allow anonymous comments and delete 
 
 ## Source Code
 
-[Source code is available at GitHub](https://github.com/hultqvist/Comments)
+[Source code is available at GitHub](http://github.com/hultqvist/Comments)
 
 ## Demo
 
