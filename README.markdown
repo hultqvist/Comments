@@ -14,7 +14,7 @@ To also support when javascript is disabled use add the following code:
     </noscript>
 
 For this to work you must have registered your site and be given a site id(sid) as seen being used in the code.
-This makes it possible for as site owner to allow anonymous comments and delete comments of others.
+This makes it possible for you as the site owner to allow anonymous comments and delete comments of others.
 
 ## Source Code
 
