@@ -1,4 +1,7 @@
 <?php
+require_once("../shared.php");
+GetSessionConstants();
+
 $cid=intval($_GET['delete']);
 
 //Delete as poster
