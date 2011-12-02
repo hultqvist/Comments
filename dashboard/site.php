@@ -47,3 +47,19 @@
 	echo '</ul>';
 	echo '</div>';
 
+
+	//Links
+	echo '<h1>Links</h1>';
+	$result = @mysql_query('
+		SELECT LinkID,Referer,COUNT(DISTINCT Referer) as Count FROM Links
+		WHERE SiteID='.siteID)
+	or die(mysql_error());
+
+	echo '<div id="comments">';
+	echo '<ul>';
+	while ($row = mysql_fetch_assoc($result)) {
+		PrintLink($row);
+	}
+	echo '</ul>';
+	echo '</div>';
+

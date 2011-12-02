@@ -18,6 +18,27 @@ if(urlError)
 
 GetSessionConstants();
 
+//Save referer
+LogReferer();
+
+function LogReferer()
+{
+	if(!isset($_GET['ref']))
+		return;
+	$ref = $_GET['ref'];
+	if(strpos($ref, siteUrl) !== false) //Don't log internal links
+		return;
+
+	$res = @mysql_query('INSERT INTO Links (SiteID, PagePath, VisitorIP, Referer)
+	VALUES
+		('.siteID.',
+		\''.mysql_real_escape_string(pagePath).'\',
+		\''.mysql_real_escape_string($_SERVER['REMOTE_ADDR']).'\',
+		\''.mysql_real_escape_string($ref).'\'
+	)')
+	or die('<div class="commentError">'.mysql_error().'</div>');
+}
+
 // Read comments
 $query='SELECT * FROM Comments
 	WHERE SiteID = '.siteID.'

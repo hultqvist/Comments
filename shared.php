@@ -43,6 +43,24 @@ function PrintComment($row)
 	echo '</li>';
 }
 
+function PrintLink($row)
+{
+	echo '<li class="unverified">';
+	echo '<div class="commentAuthor">';
+	$url=htmlentities($row['Referer']);
+	echo '<div><a href="'.$url.'">'.$url.'</a></div>';
+
+	if(sessionEmail === siteAdminEmail)
+	{
+		//echo ' <a href="'.service_url.'/dashboard/post.php?verify='.$row['LinkID'].'">post</a>';
+		//echo ' <a href="'.service_url.'/dashboard/block.php?delete='.$row['LinkID'].'">block</a>';
+	}
+
+	echo '</div>';
+	echo '<p>Unique IP: '.htmlentities($row['Count']).'</p>';
+	echo '</li>';
+}
+
 //Page URL checks and normalization
 function GetSiteConstants($checkReferer = TRUE)
 {

@@ -31,7 +31,7 @@ function loadComments()
 		}
 		ce.innerHTML = req.responseText;
 	};
-	req.open('GET', '<?php echo service_url; ?>/comments/?form=1&<?php echo $urlParam; ?>', true);
+	req.open('GET', '<?php echo service_url; ?>/comments/?form=1&ref='+encodeURIComponent(document.referrer)+'&<?php echo $urlParam; ?>', true);
 	req.send();
 }
 

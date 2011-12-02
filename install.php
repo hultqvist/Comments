@@ -9,7 +9,9 @@ mysql_select_db($db_database) or die(mysql_error());
 mysql_query("SET NAMES 'utf8'")
  or die(mysql_error());
 
+//Uncomment line to reinstall table
 //mysql_query('DROP TABLE Comments;') or print(mysql_error());
+//mysql_query('DROP TABLE Links;') or print(mysql_error());
 //mysql_query('DROP TABLE Sites;') or print(mysql_error());
 //mysql_query('DROP TABLE Authors;') or print(mysql_error());
 
@@ -25,7 +27,18 @@ mysql_query('CREATE TABLE Comments (
 	VerifiedIP VARBINARY(16),
 	PRIMARY KEY (CommentID)
 ) DEFAULT CHARSET=utf8')
- or print(mysql_error());
+ or print('<div>'.mysql_error().'</div>');
+
+mysql_query('CREATE TABLE Links (
+	LinkID INT NOT NULL auto_increment,
+	SiteID INT NOT NULL,
+	PagePath VARCHAR(255) NOT NULL,
+	VisitorIP VARBINARY(16) NOT NULL,
+	Referer VARCHAR(255) NOT NULL,
+	PRIMARY KEY (LinkID)
+) DEFAULT CHARSET=utf8')
+ or print('<div>'.mysql_error().'</div>');
+//	CONSTRAINT uc_Links UNIQUE(SiteID,PagePath,VisitorIP,Referer)
 
 mysql_query('CREATE TABLE Sites (
 	SiteID INT NOT NULL auto_increment,
@@ -33,10 +46,10 @@ mysql_query('CREATE TABLE Sites (
 	AdminEmail VARCHAR(255),
 	PRIMARY KEY (SiteID)
 ) DEFAULT CHARSET=utf8')
- or print(mysql_error());
+ or print('<div>'.mysql_error().'</div>');
 
 mysql_query('INSERT INTO Sites (SiteID, SiteUrl,AdminEmail) VALUES (1, \''.mysql_real_escape_string(service_url).'\',\''.mysql_real_escape_string(service_email).'\')')
- or print(mysql_error());
+ or print('<div>'.mysql_error().'</div>');
 
 mysql_query('CREATE TABLE Authors (
 	Email VARCHAR(255) NOT NULL,
@@ -45,9 +58,9 @@ mysql_query('CREATE TABLE Authors (
 	Session VARBINARY(40),
 	PRIMARY KEY (Email)
 ) DEFAULT CHARSET=utf8')
- or print(mysql_error());
+ or print('<div>'.mysql_error().'</div>');
 
 mysql_query('INSERT INTO Authors (Email,VerifyDate) VALUES (\''.mysql_real_escape_string(service_email).'\',NOW())')
- or print(mysql_error());
+ or print('<div>'.mysql_error().'</div>');
 
 mysql_close();
