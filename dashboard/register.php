@@ -49,4 +49,5 @@ if(!$res)
 }
 $id = mysql_insert_id();
 
-header('Location: '.service_url.'/dashboard/?sid='.$id);
+echo '<h1>Site registered</h1>';
+echo '<p><a href="'.service_url.'/dashboard/?sid='.$id.'">Continue</a>';

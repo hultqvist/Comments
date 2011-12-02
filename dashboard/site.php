@@ -25,7 +25,7 @@
 	echo '<code>';
 	echo htmlentities('<div id="comments"></div>
 <script type="text/javascript" src="'.service_url.'/script/?sid='.siteID.'" async="async"></script>
-<noscript><object data="https://silentorbit.com/comments/comments/?sid='.siteID.'&form" width="600" height="500" /></noscript>');
+<noscript><object data="'.service_url.'/comments/?sid='.siteID.'&form" width="600" height="500" /></noscript>');
 	echo '</code>';
 
 
@@ -51,8 +51,10 @@
 	//Links
 	echo '<h1>Links</h1>';
 	$result = @mysql_query('
-		SELECT LinkID,Referer,COUNT(DISTINCT Referer) as Count FROM Links
-		WHERE SiteID='.siteID)
+		SELECT PagePath,Referer,COUNT(DISTINCT VisitorIP) as Count FROM Links
+		WHERE SiteID='.siteID.'
+		GROUP BY Referer
+		ORDER BY PagePath')
 	or die(mysql_error());
 
 	echo '<div id="comments">';

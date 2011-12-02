@@ -26,6 +26,8 @@ function LogReferer()
 	if(!isset($_GET['ref']))
 		return;
 	$ref = $_GET['ref'];
+	if(filter_var($ref, FILTER_VALIDATE_URL) === FALSE)
+		return;
 	if(strpos($ref, siteUrl) !== false) //Don't log internal links
 		return;
 

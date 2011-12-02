@@ -14,9 +14,9 @@ function PrintComment($row)
 	else
 		echo '<li id="comment'.$row['CommentID'].'">';
 	echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($row['CommentEmail']))).'?s=40&d=identicon">';
-	if(isset($row['SiteUrl']))
+	if(isset($row['PagePath']))
 	{
-		$url=htmlentities($row['SiteUrl'].$row['PagePath']);
+		$url=htmlentities(siteUrl.$row['PagePath']);
 		echo '<div><a href="'.$url.'">'.$url.'</a></div>';
 	}
 	echo '<span>'.date('Y-m-d H:i', strtotime($row['CommentDate'])).'</span> ';
@@ -48,7 +48,10 @@ function PrintLink($row)
 	echo '<li class="unverified">';
 	echo '<div class="commentAuthor">';
 	$url=htmlentities($row['Referer']);
-	echo '<div><a href="'.$url.'">'.$url.'</a></div>';
+	echo '<div>Referer: <a href="'.$url.'">'.$url.'</a></div>';
+
+	$url=htmlentities(siteUrl.$row['PagePath']);
+	echo '<div>Page: <a href="'.$url.'">'.$url.'</a></div>';
 
 	if(sessionEmail === siteAdminEmail)
 	{
