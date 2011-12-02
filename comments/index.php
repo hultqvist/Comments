@@ -55,7 +55,7 @@ mysql_close();
 // Comment Form
 if(isset($_GET['form'])){?>
 <form id="commentForm" action="<?php echo service_url.'/post/?sid='.siteID.'&url='.urlencode(siteUrl.pagePath);?>" method="post" onsubmit="return commentPost();">
-	<textarea id="commentText" name="commentText"></textarea><br/>
+	<textarea id="commentText" name="commentText" required></textarea><br/>
 	<div>Your e-mail address for verification:<?php
 	if(sessionEmail)
 	{
@@ -63,7 +63,7 @@ if(isset($_GET['form'])){?>
 		echo ' <a href="'.service_url.'/logout/">logout</a>';
 	}
 ?></div>
-	<input type="text" id="commentEmail" name="commentEmail" value="<?php
+	<input type="email" id="commentEmail" name="commentEmail" placeholder="e-mail to verify comment" value="<?php
 		if(isset($_COOKIE['email']))
 			echo $_COOKIE['email']; ?>"/>
 	<input type="submit" value="Post comment" />

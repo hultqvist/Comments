@@ -86,3 +86,7 @@ text-shadow: 1px 1px 1px black;
 #commentForm input[type=submit]:hover{
 	background: #4a4;
 }
+
+#commentForm :invalid {
+	border-color: red;
+}
