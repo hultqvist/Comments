@@ -18,29 +18,6 @@ if(urlError)
 
 GetSessionConstants();
 
-//Save referer
-LogReferer();
-
-function LogReferer()
-{
-	if(!isset($_GET['ref']))
-		return;
-	$ref = $_GET['ref'];
-	if(filter_var($ref, FILTER_VALIDATE_URL) === FALSE)
-		return;
-	if(strpos($ref, siteUrl) !== false) //Don't log internal links
-		return;
-
-	$res = @mysql_query('INSERT INTO Links (SiteID, PagePath, VisitorIP, Referer)
-	VALUES
-		('.siteID.',
-		\''.mysql_real_escape_string(pagePath).'\',
-		\''.mysql_real_escape_string($_SERVER['REMOTE_ADDR']).'\',
-		\''.mysql_real_escape_string($ref).'\'
-	)')
-	or die('<div class="commentError">'.mysql_error().'</div>');
-}
-
 // Read comments
 $query='SELECT * FROM Comments
 	WHERE SiteID = '.siteID.'
@@ -48,6 +25,9 @@ $query='SELECT * FROM Comments
 if(!sessionEmail || sessionEmail !== siteAdminEmail)
 	$query .= ' AND VerifiedDate IS NOT NULL';
 $result = @mysql_query($query) or die(mysql_error());
+
+//Start output
+ob_start();
 
 //Style
 echo '<style type="text/css">';
@@ -73,8 +53,6 @@ echo '<div class="commentFeed"><a href="'.service_url.'/feed/?sid='.siteID.'&url
 	}
 	echo '</ul>';
 
-mysql_close();
-
 // Comment Form
 if(isset($_GET['form'])){?>
 <form id="commentForm" action="<?php echo service_url.'/post/?sid='.siteID.'&url='.urlencode(siteUrl.pagePath);?>" method="post" onsubmit="return commentPost();">
@@ -94,3 +72,34 @@ if(isset($_GET['form'])){?>
 </form>
 <?php
 }
+
+//Output done
+//We want the browser to finish receiving data here and display it
+$size=ob_get_length();
+header("Content-Length: $size");
+ob_end_flush();
+flush();
+
+//Save referer
+LogReferer();
+
+function LogReferer()
+{
+	if(!isset($_GET['ref']))
+		return;
+	$ref = $_GET['ref'];
+	if(filter_var($ref, FILTER_VALIDATE_URL) === FALSE)
+		return;
+	if(strpos($ref, siteUrl) !== false) //Don't log internal links
+		return;
+	$res = @mysql_query('INSERT INTO Links (SiteID, PagePath, VisitorIP, Referer)
+	VALUES
+		('.siteID.',
+		\''.mysql_real_escape_string(pagePath).'\',
+		\''.mysql_real_escape_string($_SERVER['REMOTE_ADDR']).'\',
+		\''.mysql_real_escape_string($ref).'\'
+	)')
+	or die('<div class="commentError">'.mysql_error().'</div>');
+}
+
+mysql_close();
