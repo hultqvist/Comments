@@ -48,14 +48,32 @@ function loadComments()
 			return;
 		}
 		ce.innerHTML = req.responseText;
+		
 		if(status)
 			document.getElementById("commentStatus").innerHTML = status;
 		status = null;
+		
 		var email = getCookie("email");
 		if(email)
 			document.getElementById("commentEmail").value = email;
 		else
 			document.getElementById("commentLogout").innerHTML = null;
+
+		//Preview
+		var head = document.getElementsByTagName('head')[0];
+		var script = document.createElement('script');
+		script.type = 'text/javascript';
+		script.src = '<?php echo service_url; ?>/showdown.js';
+		script.onload = function(){
+			var converter = new Showdown.converter();
+			var preview = document.getElementById("commentPreview");
+			var textarea = document.getElementById("commentText");
+			textarea.onkeyup = function(){
+				preview.innerHTML = converter.makeHtml(textarea.value);
+			}
+		}
+
+		head.appendChild(script);
 	};
 	req.open('GET', '<?php echo service_url; ?>/inc/<?php echo $sid;?>/'+page+'.html?ajax&ref='+encodeURIComponent(document.referrer), true);
 	req.send();

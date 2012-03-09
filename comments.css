@@ -61,11 +61,21 @@
 
 #commentForm textarea,
 #commentForm input{
-	padding: 10px;
+	font: 100%/120% Verdana, Arial, Helvetica, sans-serif;
+	padding: 1em;
 	margin: 0;
 	border: 1px dotted gray;
 	border-top: 3px solid #777;
 	box-shadow: inset 0 4px 60px #eee;
+}
+
+#commentPreview{
+	background: #fff;
+	padding: 0 1em;
+	margin: 0;
+	border: 1px solid #000;
+	color: #000;
+	box-shadow: inset 0 0 10px #0f0;
 }
 
 #commentForm textarea{
@@ -79,15 +89,33 @@
 #commentForm input[type=submit]{
 	float:right;
 	width: 28%;
-border: 1px solid darkgreen;
-background-color: green;
-border-radius: 4px;
-box-shadow: inset 1px 3px 12px lightgreen, inset -1px -5px 5px darkgreen, 1px 2px 1px black;
-color: white;
-text-shadow: 1px 1px 1px black;
+
+	border-radius: 5px;
+	background-color: #fff;
+	background-image: -webkit-gradient(linear, left top, left bottom, to(rgb(222, 222, 222)), from(rgb(255, 255, 255)));
+	background-image: -webkit-linear-gradient(top, rgb(255, 255, 255), rgb(222, 222, 222));
+	background-image: -moz-linear-gradient(top, rgb(255, 255, 255), rgb(222, 222, 222));
+	background-image: -o-linear-gradient(top, rgb(255, 255, 255), rgb(222, 222, 222));
+	background-image: -ms-linear-gradient(top, rgb(255, 255, 255), rgb(222, 222, 222));
+	background-image: linear-gradient(top, rgb(255, 255, 255), rgb(222, 222, 222));
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffffff', EndColorStr='#dedede');
+
+	color:#616161;
+	text-shadow: #fff 0px 1px 1px;
+	border: 1px #e6e6e6 solid;
+	box-shadow:#606060 0px 1px 2px;
 }
 #commentForm input[type=submit]:hover{
-	background: #4a4;
+	cursor: pointer !important;
+	color:#515151;
+	background-color: #f9f8f8;
+	background-image: -webkit-gradient(linear, left top, left bottom, to(rgb(213, 213, 213)), from(rgb(249, 248, 248)));
+	background-image: -webkit-linear-gradient(top, rgb(249, 248, 248), rgb(213, 213, 213));
+	background-image: -moz-linear-gradient(top, rgb(249, 248, 248), rgb(213, 213, 213));
+	background-image: -o-linear-gradient(top, rgb(249, 248, 248), rgb(213, 213, 213));
+	background-image: -ms-linear-gradient(top, rgb(249, 248, 248), rgb(213, 213, 213));
+	background-image: linear-gradient(top, rgb(249, 248, 248), rgb(213, 213, 213));
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#f9f8f8', EndColorStr='#d5d5d5');
 }
 
 #commentForm :invalid {

@@ -2,11 +2,6 @@
 // Present a single comment feed in raw html
 // Used by script.php but can also be used directly
 
-//Allow cross site posting, enable other sites to use your service
-//Remove these two header lines if you only use the service from the same site.
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-
 if(!isset($sid)) die('Missing sid');
 
 require_once('shared.php');
@@ -54,7 +49,9 @@ echo '<div class="commentFeed"><a href="'.service_url.'/inc/'.$sid.'/'.str_repla
 // Comment Form
 ?>
 <form id="commentForm" action="<?php echo service_url.'/post.php?sid='.$sid.'&page='.urlencode($page);?>" method="post" onsubmit="return commentPost();">
-	<textarea id="commentText" name="commentText" required></textarea><br/>
+	<textarea id="commentText" name="commentText" required></textarea>
+	<div><a href="http://daringfireball.net/projects/markdown/" target="_new">Markdown syntax</a></div>
+	<div id="commentPreview">Preview</div>
 	<div>Your e-mail address for verification:
 		<span id="commentDash">
 			<a href="<?php echo service_url;?>/dashboard/" target="_new">dashboard</a>

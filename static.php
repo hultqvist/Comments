@@ -36,7 +36,7 @@ if($page.$type == "scriptjs"){
 	exit;
 }
 
-//echo htmlentities("DEBUG>$page<DEBUG ".$_SERVER["PATH_INFO"], ENT_COMPAT, "UTF-8");
+echo htmlentities("DEBUG>$page<DEBUG ".$_SERVER["PATH_INFO"], ENT_COMPAT, "UTF-8");
 
 if($type == 'html'){
 	//By reference redirect, not possible to make static
@@ -66,7 +66,7 @@ if($type == 'html'){
 
 	if(file_exists('inc/'.$sid) == false)
 		mkdir('inc/'.$sid);
-	file_put_contents('inc/'.$sid.'/'.$page.'.html', $html);
+	//file_put_contents('inc/'.$sid.'/'.$page.'.html', $html);
 	exit;
 }
 
@@ -74,9 +74,11 @@ if($type == 'xml'){
 	ob_start();
 	require('feed.php');
 	$xml = ob_get_contents();
-	ob_flush();
-	@mkdir('inc/'.$sid);
-	file_put_contents('inc/'.$sid.'/'.$page.'.xml', $xml);
+	ob_end_flush();
+
+	if(file_exists('inc/'.$sid) == false)
+		mkdir('inc/'.$sid);
+	//file_put_contents('inc/'.$sid.'/'.$page.'.xml', $xml);
 	exit;
 }
 
