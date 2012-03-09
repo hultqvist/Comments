@@ -31,7 +31,7 @@ echo '<style type="text/css">';
 require('comments.css');
 echo '</style>';
 
-echo htmlentities(">$page<");
+echo htmlentities("DEBUG>$page<DEBUG");
 //Feed icon
 echo '<div class="commentFeed"><a href="'.service_url.'/inc/'.$sid.'/'.urlencode($page).'.xml"><img src="'.service_url.'/feed.png" /></a></div>';
 
@@ -47,7 +47,7 @@ echo '<div class="commentFeed"><a href="'.service_url.'/inc/'.$sid.'/'.urlencode
 
 	echo '<ul>';
 	while ($row = mysql_fetch_assoc($result)) {
-		PrintComment($row);
+		PrintComment($site, $row);
 	}
 	echo '</ul>';
 

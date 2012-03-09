@@ -14,6 +14,9 @@ page = page.replace(/  /g, ' ');
 page = page.trim();
 page = encodeURIComponent(page);
 
+//For statusmessages to be displayed after the comments are reloaded.
+var status;
+
 loadComments();
 
 function loadComments()
@@ -29,6 +32,9 @@ function loadComments()
 			return;
 		}
 		ce.innerHTML = req.responseText;
+		if(status)
+			document.getElementById("commentStatus").innerHTML = status;
+		status = null;
 	};
 	req.open('GET', '<?php echo service_url; ?>/inc/<?php echo $sid;?>/'+page+'.html?ajax&ref='+encodeURIComponent(document.referrer), true);
 	req.send();
@@ -40,8 +46,10 @@ function commentPost()
 	req.onreadystatechange = function() {
 		if(req.readyState != 4)
 			return;
-		if(req.status == 200)
-			document.getElementById("commentStatus").innerHTML = req.responseText;
+		if(req.status == 200) {
+			status = req.responseText;
+			loadComments();
+		}
 		else
 			document.getElementById("commentStatus").innerHTML = "Error: " + req.status + ": " + req.statusText;
 	};

@@ -121,10 +121,10 @@ else
 //Send email to site owner
 $headers = "From: ".service_email."\nReply-To: ".$commentEmail;
 
-mail($site['AdminEmail'], "New comment on ".$site['SiteUrl'].' '.$page,
+mail($site['AdminEmail'], "New comment on ".$page,
 	"Dashboard: ".service_url."/dashboard/\n".
 	"Referrer: ".$_SERVER['HTTP_REFERER']."\n".
 	"From: ".$_SERVER['REMOTE_ADDR']."\n".
 	"Email: ".$commentEmail.($commentEmail == $session['Email']?'(verified)':'(not checked)')."\n".
-	"To: ".$site['SiteUrl'].' '.$page."\n".
+	"To: ".$page."\n".
 	$commentText, $headers);

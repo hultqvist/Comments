@@ -12,8 +12,8 @@ function PrintComment($site, $row, $session = false)
 	echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($row['CommentEmail']))).'?s=40&d=identicon">';
 	if(isset($row['Page']))
 	{
-		$url=htmlentities($site['SiteUrl'].$row['Page']);
-		echo '<div><a href="'.$url.'">'.$url.'</a></div>';
+		//$url=htmlentities($site['SiteUrl'].$row['Page']);
+		//echo '<div><a href="'.$url.'">'.$url.'</a></div>';
 	}
 	echo '<span>'.date('Y-m-d H:i', strtotime($row['CommentDate'])).'</span> ';
 
@@ -127,7 +127,7 @@ function GenerateAndSendVerificationCode($email, $url)
 		'To verify the comment you made on '.$url.'
 
 Click here to login and review your comments:
-'.service_url.'/authorize/?email='.urlencode($email).'&code='.$code,
+'.service_url.'/auth.php?email='.urlencode($email).'&code='.$code,
 		'From: '.service_email)
 	or die('<div class="commentError">Failed to send verification email, try again</div>');
 }

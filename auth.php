@@ -27,7 +27,7 @@ if($row)
 
 		$url = parse_url(service_url);
 		setcookie("session", $session, time()+3600*365, $url['path'], $url['host'], $url['scheme'] === "https", true);
-		setcookie("email", $email, time()+3600*365, $url['path'], $url['host'], $url['scheme'] === "https", true);
+		setcookie("email", $email, time()+3600*365, $url['path'], $url['host'], $url['scheme'] === "https", false);
 		header('Location: '.service_url.'/dashboard/');
 		return;
 	}
