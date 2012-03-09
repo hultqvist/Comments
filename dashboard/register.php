@@ -1,4 +1,6 @@
 <?php
+if(!$session)
+	return;
 
 if(isset($_POST['register']) === FALSE)
 {
@@ -14,8 +16,6 @@ if(isset($_POST['register']) === FALSE)
 <?php
 	return;
 }
-if(sessionEmail == null)
-	return;
 
 $url = rtrim($_POST['register'], "/");
 if(filter_var($url, FILTER_VALIDATE_URL) === FALSE)
@@ -47,7 +47,7 @@ if(!$res)
 	echo('<div class="commentError">'.mysql_error().'</div>');
 	return;
 }
-$id = mysql_insert_id();
+$sid = mysql_insert_id();
 
 echo '<h1>Site registered</h1>';
-echo '<p><a href="'.service_url.'/dashboard/?sid='.$id.'">Continue</a>';
+echo '<p><a href="'.service_url.'/dashboard/?sid='.$sid.'">Continue</a>';

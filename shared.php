@@ -3,29 +3,25 @@
 //Database and service parameters
 require_once("config.php");
 
-mysql_connect($db_host, $db_username, $db_password);
-mysql_select_db($db_database) or die(mysql_error());
-mysql_query("SET NAMES 'utf8'") or die(mysql_error());
-
-function PrintComment($row)
+function PrintComment($site, $row, $session = false)
 {
 	if($row['VerifiedDate'] === null)
 		echo '<li id="comment'.$row['CommentID'].'" class="unverified">';
 	else
 		echo '<li id="comment'.$row['CommentID'].'">';
 	echo '<div class="commentAuthor"><img src="https://secure.gravatar.com/avatar/'.md5(strtolower(trim($row['CommentEmail']))).'?s=40&d=identicon">';
-	if(isset($row['PagePath']))
+	if(isset($row['Page']))
 	{
-		$url=htmlentities(siteUrl.$row['PagePath']);
+		$url=htmlentities($site['SiteUrl'].$row['Page']);
 		echo '<div><a href="'.$url.'">'.$url.'</a></div>';
 	}
 	echo '<span>'.date('Y-m-d H:i', strtotime($row['CommentDate'])).'</span> ';
 
-	if(sessionEmail && (sessionEmail === siteAdminEmail || sessionEmail === $row['CommentEmail']))
+	if($session && ($session['Email'] === $site['AdminEmail'] || $session['Email'] === $row['CommentEmail']))
 	{
 		if($row['CommentEmail'] === "")
 			echo '<strong>Anonymous</strong>';
-		elseif(sessionEmail != $row['CommentEmail'])
+		elseif($session['Email'] != $row['CommentEmail'])
 			echo htmlentities($row['CommentEmail']);
 		if($row['VerifiedDate'] === null)
 		{
@@ -34,7 +30,7 @@ function PrintComment($row)
 			echo ' <a href="'.service_url.'/dashboard/verify.php?verify='.$row['CommentID'].'">verify</a>';
 			echo ' <a href="'.service_url.'/dashboard/delete.php?delete='.$row['CommentID'].'">delete</a>';
 		}
-		elseif(sessionEmail === siteAdminEmail)
+		elseif($session['Email'] === $site['AdminEmail'])
 			echo ' <a href="'.service_url.'/dashboard/delete.php?delete='.$row['CommentID'].'">delete</a>';
 	}
 
@@ -43,20 +39,20 @@ function PrintComment($row)
 	echo '</li>';
 }
 
-function PrintLink($row)
+function PrintLink($site, $row, $session = false)
 {
 	echo '<li class="unverified">';
 	echo '<div class="commentAuthor">';
 	$url=htmlentities($row['Referer']);
 	echo '<div>Referer: <a href="'.$url.'">'.$url.'</a></div>';
 
-	$url=htmlentities(siteUrl.$row['PagePath']);
+	$url=htmlentities($site['SiteUrl'].$row['Page']);
 	echo '<div>Page: <a href="'.$url.'">'.$url.'</a></div>';
 
-	if(sessionEmail === siteAdminEmail)
+	if($session && $session['Email'] === $site['AdminEmail'])
 	{
-		//echo ' <a href="'.service_url.'/dashboard/post.php?verify='.$row['LinkID'].'">post</a>';
-		//echo ' <a href="'.service_url.'/dashboard/block.php?delete='.$row['LinkID'].'">block</a>';
+		echo ' <a href="'.service_url.'/dashboard/verify.php?verify='.$row['LinkID'].'">verify</a>';
+		echo ' <a href="'.service_url.'/dashboard/delete.php?delete='.$row['LinkID'].'">delete</a>';
 	}
 
 	echo '</div>';
@@ -65,16 +61,8 @@ function PrintLink($row)
 }
 
 //Page URL checks and normalization
-function GetSiteConstants($checkReferer = TRUE)
+function GetSiteConstants($sid, $checkReferer = TRUE)
 {
-	//SiteID
-	if(isset($_GET['sid']) === FALSE)
-	{
-		define("urlError", 'Missing ?sid=...');
-		return;
-	}
-	$sid = intval($_GET['sid']);
-
 	//Page URL
 	if($checkReferer){
 		if(isset($_SERVER['HTTP_REFERER']))
@@ -120,12 +108,9 @@ function GetSiteConstants($checkReferer = TRUE)
 				return;
 			}
 		}
-		define("pagePath", substr($pageUrl['path'], strlen($siteUrl['path'])));
 	}
 	define("urlError", FALSE);
-	define("siteID", $sid);
-	define("siteAdminEmail", $row['AdminEmail']);
-	define("siteUrl", $row['SiteUrl']);
+	return $row;
 }
 
 
@@ -159,10 +144,28 @@ function GetSessionConstants()
 	if(mysql_num_rows($res) !== 1)
 	{
 		setcookie("session", null, time()-24*3600);
-		define('sessionEmail', null);
 		return NULL;
 	}
-	define('sessionEmail', $email);
-	return $email;
+	return mysql_fetch_assoc($res);
 }
 
+
+
+function LogReferer($site, $page)
+{
+	if(!isset($_GET['ref']))
+		return;
+	$ref = $_GET['ref'];
+	if(filter_var($ref, FILTER_VALIDATE_URL) === FALSE)
+		return;
+	if(strpos($ref, $site['SiteUrl']) !== false) //Don't log internal links
+		return;
+	$res = @mysql_query('INSERT INTO Links (SiteID, Page, VisitorIP, Referer)
+	VALUES
+		('.$sid.',
+		\''.mysql_real_escape_string($page).'\',
+		\''.mysql_real_escape_string($_SERVER['REMOTE_ADDR']).'\',
+		\''.mysql_real_escape_string($ref).'\'
+	)')
+	or die('<div class="commentError">'.mysql_error().'</div>');
+}

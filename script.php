@@ -1,20 +1,19 @@
 <?php
 // Main script called by the pages using this service.
-
+if(!isset($sid)) die('Missing sid');
 header('Content-Type: text/javascript');
 
-require_once('../config.php');
+require_once('config.php');
 
-if(isset($_GET['sid']) === FALSE)
-{
-	echo '<div class="commentError">Missing ?sid=... in script url</div>';
-	return;
-}
-$urlParam='sid='.intval($_GET['sid']);
-if(isset($_GET['url']))
-	$urlParam .= '&url='.urlencode($_GET['url']);
-
+//js version of transfering path into page
+//See static.php for php version
 ?>
+var page = window.location.hostname+" "+window.location.pathname+" "+window.location.search;
+page = page.replace(/\//g, ' ');
+page = page.replace(/  /g, ' ');
+page = page.trim();
+page = encodeURIComponent(page);
+
 loadComments();
 
 function loadComments()
@@ -26,12 +25,12 @@ function loadComments()
 			return;
 		if(req.status == 500){
 			ce.innerHTML = "Error: " + req.status + ": " + req.statusText;
-			setTimeout(function(){req.send();},5000);
+			setTimeout(function(){req.send();},5000); //Retry every 5 seconds
 			return;
 		}
 		ce.innerHTML = req.responseText;
 	};
-	req.open('GET', '<?php echo service_url; ?>/comments/?form=1&ref='+encodeURIComponent(document.referrer)+'&<?php echo $urlParam; ?>', true);
+	req.open('GET', '<?php echo service_url; ?>/inc/<?php echo $sid;?>/'+page+'.html?ajax&ref='+encodeURIComponent(document.referrer), true);
 	req.send();
 }
 
@@ -46,7 +45,7 @@ function commentPost()
 		else
 			document.getElementById("commentStatus").innerHTML = "Error: " + req.status + ": " + req.statusText;
 	};
-	req.open('POST', '<?php echo service_url; ?>/post/?<?php echo $urlParam; ?>', true);
+	req.open('POST', '<?php echo service_url; ?>/post.php?sid=<?php echo $sid; ?>&page='+page);
 	var parameters = 'commentText='+encodeURI(document.getElementById('commentText').value)+
 		'&commentEmail='+encodeURI(document.getElementById('commentEmail').value)+
 		'&ajax=true';

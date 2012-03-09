@@ -1,7 +1,7 @@
 <?php
 //This is called when a person clicks the verification link in an email.
 
-require_once("../shared.php");
+require_once("shared.php");
 
 $email = isset($_GET['email'])? $_GET['email'] : null;
 $code  = isset($_GET['code'])? $_GET['code'] : null;

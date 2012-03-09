@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteBase /comments/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^inc/(.*)$ static.php/$1 [QSA,L]
+
+AddType application/atom+xml .xml

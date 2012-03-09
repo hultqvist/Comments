@@ -1,7 +1,7 @@
 <?php
 	//Sites
 	echo '<h1>Your sites</h1>';
-	$result = @mysql_query('SELECT * FROM Sites WHERE AdminEmail=\''.mysql_real_escape_string(sessionEmail).'\'')
+	$result = @mysql_query('SELECT * FROM Sites WHERE AdminEmail=\''.mysql_real_escape_string($session['Email']).'\'')
 	 or die(mysql_error());
 	echo '<ul>';
 	while ($row = mysql_fetch_assoc($result)) {

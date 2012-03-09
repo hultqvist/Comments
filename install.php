@@ -4,21 +4,17 @@
 
 require_once("config.php");
 
-mysql_connect($db_host, $db_username, $db_password);
-mysql_select_db($db_database) or die(mysql_error());
-mysql_query("SET NAMES 'utf8'")
- or die(mysql_error());
-
 //Uncomment line to reinstall table
-//mysql_query('DROP TABLE Comments;') or print(mysql_error());
-//mysql_query('DROP TABLE Links;') or print(mysql_error());
-//mysql_query('DROP TABLE Sites;') or print(mysql_error());
-//mysql_query('DROP TABLE Authors;') or print(mysql_error());
+mysql_query('DROP TABLE Comments;') or print(mysql_error());
+mysql_query('DROP TABLE Links;') or print(mysql_error());
+mysql_query('DROP TABLE Sites;') or print(mysql_error());
+mysql_query('DROP TABLE Authors;') or print(mysql_error());
 
 mysql_query('CREATE TABLE Comments (
 	CommentID INT NOT NULL auto_increment,
 	SiteID INT NOT NULL,
-	PagePath VARCHAR(255) NOT NULL,
+	Page VARCHAR(255) NOT NULL,
+	PageUrl VARCHAR(255) NOT NULL,
 	CommentIP VARBINARY(16) NOT NULL,
 	CommentEmail VARCHAR(255) NOT NULL,
 	CommentText VARCHAR(32767) NOT NULL,
@@ -32,13 +28,13 @@ mysql_query('CREATE TABLE Comments (
 mysql_query('CREATE TABLE Links (
 	LinkID INT NOT NULL auto_increment,
 	SiteID INT NOT NULL,
-	PagePath VARCHAR(255) NOT NULL,
+	Page VARCHAR(255) NOT NULL,
 	VisitorIP VARBINARY(16) NOT NULL,
 	Referer VARCHAR(255) NOT NULL,
 	PRIMARY KEY (LinkID)
 ) DEFAULT CHARSET=utf8')
  or print('<div>'.mysql_error().'</div>');
-//	CONSTRAINT uc_Links UNIQUE(SiteID,PagePath,VisitorIP,Referer)
+//	CONSTRAINT uc_Links UNIQUE(SiteID,Page,VisitorIP,Referer)
 
 mysql_query('CREATE TABLE Sites (
 	SiteID INT NOT NULL auto_increment,
@@ -64,3 +60,4 @@ mysql_query('INSERT INTO Authors (Email,VerifyDate) VALUES (\''.mysql_real_escap
  or print('<div>'.mysql_error().'</div>');
 
 mysql_close();
+echo "All done";

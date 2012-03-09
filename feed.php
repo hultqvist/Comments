@@ -6,8 +6,8 @@ echo '<?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 ';
 
-require_once("../shared.php");
-GetSiteConstants(false);
+require_once("shared.php");
+$site = GetSiteConstants($sid, false);
 if(urlError)
 {
 	header("HTTP/1.1 404 Not Found");
@@ -16,7 +16,6 @@ if(urlError)
 }
 
 // Read site data
-$siteBaseUrl = siteUrl;
 $siteName = "Comment Feed";
 $siteAuthor = "John Doe";
 
@@ -24,30 +23,30 @@ $siteAuthor = "John Doe";
 
 echo '
 	<title>'.htmlentities($siteName).'</title>
-	<link href="'.htmlentities($siteBaseUrl).'"/>
-	<link href="'.service_url.'/feed.php?sid='.siteID.'&amp;url='.urlencode(siteUrl.pagePath).'" rel="self"/>
+	<link href="'.htmlentities($site['SiteUrl']).'"/>
+	<link href="'.service_url.'/inc/'.$sid.'/'.urlencode($page).'.xml" rel="self"/>
 	<updated>'.gmdate('Y-m-d\TH:i:s\Z').'</updated>
 	<author>
 		<name>'.htmlentities($siteAuthor).'</name>
 	</author>
-	<id>'.htmlentities(siteUrl.pagePath).'</id>
+	<id>'.htmlentities($site['SiteUrl'].'/'.urlencode($page)).'</id>
 ';
 
 // Read comments
 
 $result = mysql_query('SELECT * FROM Comments
 	WHERE SiteID = '.siteID.'
-	AND PagePath = \''.mysql_real_escape_string(pagePath).'\'
+	AND Page = \''.mysql_real_escape_string($page).'\'
 	AND VerifiedDate IS NOT NULL
 	ORDER BY CommentDate DESC
 	LIMIT 50
 ')
  or die(mysql_error());
 
-require_once('../markdown.php');
+require_once('markdown.php');
 
 while ($row = mysql_fetch_assoc($result)) {
-	$link = siteUrl.htmlentities($row['PagePath']).'#comment'.$row['CommentID'];
+	$link = $site['SiteUrl'].htmlentities($row['Page']).'#comment'.$row['CommentID'];
 	echo '
 	<entry>
 		<title>Comment</title>

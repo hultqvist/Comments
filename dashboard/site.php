@@ -1,18 +1,16 @@
 <?php
-	if(!sessionEmail)
+	if(!$session)
 		return;
-
-	GetSiteConstants(FALSE);
 
 	if(urlError)
 		echo urlError;
 
 	//Sites
-	$result = @mysql_query('SELECT * FROM Sites WHERE AdminEmail=\''.mysql_real_escape_string(sessionEmail).'\' AND SiteID='.siteID)
+	$result = @mysql_query('SELECT * FROM Sites WHERE AdminEmail=\''.mysql_real_escape_string($session['Email']).'\' AND SiteID='.$sid)
 	 or die(mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if(!$row) {
-		echo 'No site with sid='.siteID;
+		echo 'No site with sid='.$sid;
 		return;
 	}
 
@@ -24,8 +22,8 @@
 	echo '<p>Put the following code on every page you want comments</p>';
 	echo '<code>';
 	echo htmlentities('<div id="comments"></div>
-<script type="text/javascript" src="'.service_url.'/script/?sid='.siteID.'" async="async"></script>
-<noscript><object data="'.service_url.'/comments/?sid='.siteID.'&form" width="600" height="500" /></noscript>');
+<script type="text/javascript" src="'.service_url.'/inc/'.$sid.'/script.js" async="async"></script>
+<noscript><object data="'.service_url.'/inc/'.$sid.'/ref.html" width="600" height="500" /></noscript>');
 	echo '</code>';
 
 
@@ -34,7 +32,7 @@
 	echo '<h1>Comments</h1>';
 	$result = @mysql_query('
 		SELECT * FROM Comments
-		WHERE SiteID='.siteID)
+		WHERE SiteID='.$sid)
 	or die(mysql_error());
 
 	require_once('../markdown.php');
@@ -52,7 +50,7 @@
 	echo '<h1>Links</h1>';
 	$result = @mysql_query('
 		SELECT PagePath,Referer,COUNT(DISTINCT VisitorIP) as Count FROM Links
-		WHERE SiteID='.siteID.'
+		WHERE SiteID='.$sid.'
 		GROUP BY Referer
 		ORDER BY PagePath')
 	or die(mysql_error());

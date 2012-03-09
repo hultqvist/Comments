@@ -14,9 +14,9 @@
 	<h2>Love your comments</h2>
 	<!-- Start of comment code -->
 	<div id="comments"></div>
-	<script type="text/javascript" src="http://silentorbit.com/comments/script/?sid=1" async="async"></script>
+	<script type="text/javascript" src="http://silentorbit.com/comments/inc/1/script.js" async="async"></script>
 	<noscript>
-		<object data="http://silentorbit.com/comments/comments/?sid=1&form" width="600" height="500" />
+		<object data="http://silentorbit.com/comments/inc/1/ref.html" width="600" height="500" />
 	</noscript>
 	<!-- End of comment code -->
 	</article>

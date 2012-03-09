@@ -1,6 +1,6 @@
 <?php
 require_once("../shared.php");
-GetSessionConstants();
+$session = GetSessionConstants();
 
 $cid=intval($_GET['verify']);
 
@@ -10,7 +10,7 @@ $res = @mysql_query('UPDATE Comments
 	VerifiedIP=\''.mysql_real_escape_string($_SERVER['REMOTE_ADDR']).'\',
 	VerifiedDate=NOW()
 	WHERE CommentID='.$cid.'
-	AND CommentEmail=\''.mysql_real_escape_string(sessionEmail).'\'
+	AND CommentEmail=\''.mysql_real_escape_string($session['Email']).'\'
 	AND VerifiedIP IS NULL
 ')
 	or die('<div class="commentError">'.mysql_error().'</div>');
@@ -30,7 +30,7 @@ or die('<div class="commentError">'.mysql_error().'</div>');
 $row = mysql_fetch_assoc($res);
 if(!$row)
 	die('<div class="commentError">No comment found.</div>');
-if($row['AdminEmail'] != sessionEmail)
+if($row['AdminEmail'] != $session['Email'])
 	die('<div class="commentError">No comment found.</div>');
 
 $res = @mysql_query('UPDATE Comments

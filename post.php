@@ -8,11 +8,20 @@ header('Content-Type: text/html');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 
-require_once('../shared.php');
-GetSiteConstants();
+if(isset($_GET['sid']))
+	$sid = intval($_GET['sid']);
+else
+	$sid = 0;
+if(isset($_GET['page']))
+	$page = $_GET['page'];
+else
+	$page = null;
+
+require_once('shared.php');
+$site = GetSiteConstants($sid);
 
 if(!isset($_REQUEST['ajax']))
-	echo '<div><a href="'.service_url.'/comments/?sid='.siteID.'&url='.htmlentities(siteUrl.pagePath).'&form">back</a></div>';
+	echo '<div><a href="'.service_url.'/inc/'.$sid.'/'.urlencode($page).'.html">back</a></div>';
 
 if(urlError)
 {
@@ -37,16 +46,17 @@ if($commentEmail != "" && filter_var($commentEmail, FILTER_VALIDATE_EMAIL) === F
 }
 
 //Get poster session
-GetSessionConstants();
+$session = GetSessionConstants();
 
 //Save Comment
-if(sessionEmail && $commentEmail === sessionEmail)
+if($session && $commentEmail === $session['Email'])
 {
 	//Already verified poster
-	$res = @mysql_query('INSERT INTO Comments (SiteID, PagePath, CommentIP, CommentDate, CommentText, CommentEmail, VerifiedIP, VerifiedDate)
+	$res = @mysql_query('INSERT INTO Comments (SiteID, Page, PageUrl, CommentIP, CommentDate, CommentText, CommentEmail, VerifiedIP, VerifiedDate)
 	VALUES
-		('.siteID.',
-		\''.mysql_real_escape_string(pagePath).'\',
+		('.$sid.',
+		\''.mysql_real_escape_string($page).'\',
+		\''.mysql_real_escape_string($_SERVER['HTTP_REFERER']).'\',
 		\''.mysql_real_escape_string($_SERVER['REMOTE_ADDR']).'\',
 		NOW(),
 		\''.mysql_real_escape_string($commentText).'\',
@@ -61,10 +71,11 @@ if(sessionEmail && $commentEmail === sessionEmail)
 else
 {
 	//Non verified comment
-	$res = @mysql_query('INSERT INTO Comments (SiteID, PagePath, CommentIP, CommentDate, CommentText, CommentEmail)
+	$res = @mysql_query('INSERT INTO Comments (SiteID, Page, PageUrl, CommentIP, CommentDate, CommentText, CommentEmail)
 	VALUES
-		('.siteID.',
-		\''.mysql_real_escape_string(pagePath).'\',
+		('.$sid.',
+		\''.mysql_real_escape_string($page).'\',
+		\''.mysql_real_escape_string($_SERVER['HTTP_REFERER']).'\',
 		\''.mysql_real_escape_string($_SERVER['REMOTE_ADDR']).'\',
 		NOW(),
 		\''.mysql_real_escape_string($commentText).'\',
@@ -99,8 +110,7 @@ else
 		//Create new VerifyCode
 		if($verificationCode === TRUE)
 		{
-			require_once('../shared.php');
-			GenerateAndSendVerificationCode($commentEmail, siteUrl.pagePath);
+			GenerateAndSendVerificationCode($commentEmail, $site['SiteUrl'].$page);
 		}
 		echo '<div class="commentOk">Comment awaits your verification, check your email</div>';
 	}
@@ -111,9 +121,10 @@ else
 //Send email to site owner
 $headers = "From: ".service_email."\nReply-To: ".$commentEmail;
 
-mail(siteAdminEmail, "New comment on ".siteUrl.pagePath,
+mail($site['AdminEmail'], "New comment on ".$site['SiteUrl'].' '.$page,
 	"Dashboard: ".service_url."/dashboard/\n".
+	"Referrer: ".$_SERVER['HTTP_REFERER']."\n".
 	"From: ".$_SERVER['REMOTE_ADDR']."\n".
-	"Email: ".$commentEmail.($commentEmail == sessionEmail?'(verified)':'(not checked)')."\n".
-	"To: ".siteUrl.pagePath."\n".
+	"Email: ".$commentEmail.($commentEmail == $session['Email']?'(verified)':'(not checked)')."\n".
+	"To: ".$site['SiteUrl'].' '.$page."\n".
 	$commentText, $headers);

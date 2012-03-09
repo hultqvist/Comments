@@ -3,7 +3,7 @@ header('Content-Type: text/html');
 
 require_once("../shared.php");
 
-GetSessionConstants();
+$session = GetSessionConstants();
 ?>
 <html>
 <head>
@@ -17,12 +17,12 @@ GetSessionConstants();
 	<a href="?comments">Comments</a>
 	<a href="?sites">Sites</a>
 	<a href="?register">Register website</a>
-	<strong><?php echo htmlentities(sessionEmail);?></strong>
+	<strong><?php echo htmlentities($session['Email']);?></strong>
 	<a href="<?php echo service_url;?>/logout/">Logout</a>
 </header>
 <article>
 <?php
-if(sessionEmail !== null)
+if($session)
 {
 	if(isset($_REQUEST['register']))
 		require('register.php');
