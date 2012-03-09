@@ -6,6 +6,24 @@ require_once("shared.php");
 $email = isset($_GET['email'])? $_GET['email'] : null;
 $code  = isset($_GET['code'])? $_GET['code'] : null;
 
+if(isset($_GET['logout'])){
+
+	$email = isset($_COOKIE['email'])? $_COOKIE['email'] : null;
+	$session = isset($_COOKIE['session'])? $_COOKIE['session'] : null;
+	$res = @mysql_query('UPDATE Authors
+		SET Session=null
+		WHERE Email=\''.mysql_real_escape_string($email).'\'
+		AND Session=\''.mysql_real_escape_string($session).'\'')
+		or die('<div class="commentError">'.mysql_error().'</div>');
+
+	$url = parse_url(service_url);
+	setcookie("session", "", time()-3600*365, $url['path'], $url['host'], $url['scheme'] === "https", true);
+	setcookie("email", "", time()-3600*365, $url['path'], $url['host'], $url['scheme'] === "https", true);
+
+	header('Location: '.$_SERVER['HTTP_REFERER']);
+	exit;
+}
+
 //Check code
 $res = @mysql_query('SELECT * FROM Authors WHERE Email=\''.mysql_real_escape_String($email).'\'')
 	or die('<div class="commentError">'.mysql_error().'</div>');
@@ -27,6 +45,7 @@ if($row)
 
 		$url = parse_url(service_url);
 		setcookie("session", $session, time()+3600*365, $url['path'], $url['host'], $url['scheme'] === "https", true);
+		//Allow javascript to access this cookie
 		setcookie("email", $email, time()+3600*365, $url['path'], $url['host'], $url['scheme'] === "https", false);
 		header('Location: '.service_url.'/dashboard/');
 		return;
@@ -37,7 +56,7 @@ if($row)
 <head>
 	<meta charset="UTF-8" />
 	<title>Comment Dashboard</title>
-	<link rel="stylesheet" href="../style.css" type="text/css" />
+	<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 <body>
 <article>

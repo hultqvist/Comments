@@ -30,9 +30,13 @@ if($page.$type == "scriptjs"){
 	require('script.php');
 	$script = ob_get_contents();
 	ob_flush();
-	//file_put_contents('comments/script.js', $script);
+	if(file_exists('inc/'.$sid) == false)
+		mkdir('inc/'.$sid);
+	//file_put_contents('inc/'.$sid.'/script.js', $script);
 	exit;
 }
+
+//echo htmlentities("DEBUG>$page<DEBUG ".$_SERVER["PATH_INFO"], ENT_COMPAT, "UTF-8");
 
 if($type == 'html'){
 	//By reference redirect, not possible to make static
@@ -47,7 +51,7 @@ if($type == 'html'){
 		$ref = trim(str_replace(array('/','?'), ' ', $ref));
 		$ref = str_replace('  ', ' ', $ref);
 		$ref = urlencode($ref);
-		//echo ('Location: '.service_url.'/inc/'.$sid.'/'.$ref.'.html');
+		$ref = str_replace('+','%20',$ref);
 		header('Location: '.service_url.'/inc/'.$sid.'/'.$ref.'.html');
 		exit;
 	}
@@ -60,10 +64,9 @@ if($type == 'html'){
 	header("Content-Length: $size");
 	ob_end_flush();
 
-	//Save referer
-	LogReferer($sid, $page);
-
-	//file_put_contents('comments/'.$page.'.html', $html);
+	if(file_exists('inc/'.$sid) == false)
+		mkdir('inc/'.$sid);
+	file_put_contents('inc/'.$sid.'/'.$page.'.html', $html);
 	exit;
 }
 
@@ -72,7 +75,8 @@ if($type == 'xml'){
 	require('feed.php');
 	$xml = ob_get_contents();
 	ob_flush();
-	//file_put_contents('comments/'.$page.'.xml', $xml);
+	@mkdir('inc/'.$sid);
+	file_put_contents('inc/'.$sid.'/'.$page.'.xml', $xml);
 	exit;
 }
 

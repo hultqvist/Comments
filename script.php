@@ -8,9 +8,8 @@ require_once('config.php');
 //js version of transfering path into page
 //See static.php for php version
 ?>
-var page = window.location.hostname+" "+window.location.pathname+" "+window.location.search;
-page = page.replace(/\//g, ' ');
-page = page.replace(/  /g, ' ');
+var page = window.location.hostname+" "+window.location.pathname;
+page = page.replace(/[\/ ]+/g, ' ');
 page = page.trim();
 page = encodeURIComponent(page);
 
@@ -18,6 +17,23 @@ page = encodeURIComponent(page);
 var status;
 
 loadComments();
+
+function setCookie(key, value)
+{
+  document.cookie = escape(key) + '=' + escape(value);
+}
+
+function getCookie(key)
+{
+  // Separate key / value pairs
+  var cookies = document.cookie.split(";");
+  for(var i = 0; i < cookies.length; i++) {
+    var ce = cookies[i].split("=");
+    if (key == ce[0])
+       return unescape(ce[1]);
+  }
+  return null;
+}
 
 function loadComments()
 {
@@ -35,6 +51,11 @@ function loadComments()
 		if(status)
 			document.getElementById("commentStatus").innerHTML = status;
 		status = null;
+		var email = getCookie("email");
+		if(email)
+			document.getElementById("commentEmail").value = email;
+		else
+			document.getElementById("commentLogout").innerHTML = null;
 	};
 	req.open('GET', '<?php echo service_url; ?>/inc/<?php echo $sid;?>/'+page+'.html?ajax&ref='+encodeURIComponent(document.referrer), true);
 	req.send();

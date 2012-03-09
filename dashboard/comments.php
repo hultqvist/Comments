@@ -13,7 +13,7 @@
 	echo '<div id="comments">';
 	echo '<ul>';
 	while ($row = mysql_fetch_assoc($result)) {
-		PrintComment($site, $row, $session);
+		PrintComment(null, $row, $session);
 	}
 	echo '</ul>';
 	echo '</div>';

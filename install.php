@@ -5,10 +5,10 @@
 require_once("config.php");
 
 //Uncomment line to reinstall table
-mysql_query('DROP TABLE Comments;') or print(mysql_error());
-mysql_query('DROP TABLE Links;') or print(mysql_error());
-mysql_query('DROP TABLE Sites;') or print(mysql_error());
-mysql_query('DROP TABLE Authors;') or print(mysql_error());
+//mysql_query('DROP TABLE Comments;') or print(mysql_error());
+//mysql_query('DROP TABLE Links;') or print(mysql_error());
+//mysql_query('DROP TABLE Sites;') or print(mysql_error());
+//mysql_query('DROP TABLE Authors;') or print(mysql_error());
 
 mysql_query('CREATE TABLE Comments (
 	CommentID INT NOT NULL auto_increment,
@@ -60,4 +60,7 @@ mysql_query('INSERT INTO Authors (Email,VerifyDate) VALUES (\''.mysql_real_escap
  or print('<div>'.mysql_error().'</div>');
 
 mysql_close();
-echo "All done";
+?>
+
+<h1>All done</h1>
+<p>Now make sure that the <strong>inc/</strong> directory is writeable by the php script</p>

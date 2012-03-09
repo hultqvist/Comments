@@ -2,6 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>Comments</title>
 	<link rel="stylesheet" href="style.css" type="text/css" />
 </head>

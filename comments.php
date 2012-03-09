@@ -23,7 +23,8 @@ $session = GetSessionConstants();
 // Read comments
 $query='SELECT * FROM Comments
  WHERE SiteID = '.$sid.' AND Page = \''.mysql_real_escape_string($page).'\'
- AND VerifiedDate IS NOT NULL';
+ AND VerifiedDate IS NOT NULL
+ ORDER BY CommentDate ASC';
 $result = @mysql_query($query) or die(mysql_error());
 
 //Style
@@ -31,9 +32,8 @@ echo '<style type="text/css">';
 require('comments.css');
 echo '</style>';
 
-echo htmlentities("DEBUG>$page<DEBUG");
 //Feed icon
-echo '<div class="commentFeed"><a href="'.service_url.'/inc/'.$sid.'/'.urlencode($page).'.xml"><img src="'.service_url.'/feed.png" /></a></div>';
+echo '<div class="commentFeed"><a href="'.service_url.'/inc/'.$sid.'/'.str_replace('+','%20',urlencode($page)).'.xml"><img src="'.service_url.'/feed.png" /></a></div>';
 
 	$count = mysql_num_rows($result);
 	if($count === 0)
@@ -55,16 +55,13 @@ echo '<div class="commentFeed"><a href="'.service_url.'/inc/'.$sid.'/'.urlencode
 ?>
 <form id="commentForm" action="<?php echo service_url.'/post.php?sid='.$sid.'&page='.urlencode($page);?>" method="post" onsubmit="return commentPost();">
 	<textarea id="commentText" name="commentText" required></textarea><br/>
-	<div>Your e-mail address for verification:<?php
-	if($session)
-	{
-		echo ' <a href="'.service_url.'/dashboard/">dashboard</a>';
-		echo ' <a href="'.service_url.'/logout.php">logout</a>';
-	}
-?></div>
-	<input type="email" id="commentEmail" name="commentEmail" placeholder="e-mail to verify comment" value="<?php
-		if(isset($_COOKIE['email']))
-			echo $_COOKIE['email']; ?>"/>
+	<div>Your e-mail address for verification:
+		<span id="commentDash">
+			<a href="<?php echo service_url;?>/dashboard/" target="_new">dashboard</a>
+			<a id="commentLogout" href="<?php echo service_url;?>/auth.php?logout">logout</a>
+		</span>
+	</div>
+	<input type="email" id="commentEmail" name="commentEmail" placeholder="E-mail to verify comment" value=""/>
 	<input type="submit" value="Post comment" />
 	<div id="commentStatus"></div>
 </form>

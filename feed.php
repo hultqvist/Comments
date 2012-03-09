@@ -35,11 +35,10 @@ echo '
 // Read comments
 
 $result = mysql_query('SELECT * FROM Comments
-	WHERE SiteID = '.siteID.'
+	WHERE SiteID = '.$sid.'
 	AND Page = \''.mysql_real_escape_string($page).'\'
 	AND VerifiedDate IS NOT NULL
 	ORDER BY CommentDate DESC
-	LIMIT 50
 ')
  or die(mysql_error());
 

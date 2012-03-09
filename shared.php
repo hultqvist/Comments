@@ -27,11 +27,11 @@ function PrintComment($site, $row, $session = false)
 		{
 			echo ' <em>('.htmlentities($row['CommentIP']).')</em>';
 			echo ' <strong>(unverified)</strong>';
-			echo ' <a href="'.service_url.'/dashboard/verify.php?verify='.$row['CommentID'].'">verify</a>';
-			echo ' <a href="'.service_url.'/dashboard/delete.php?delete='.$row['CommentID'].'">delete</a>';
+			echo ' <a href="'.service_url.'/update.php?cid='.$row['CommentID'].'&amp;action=verify">verify</a>';
+			echo ' <a href="'.service_url.'/update.php?cid='.$row['CommentID'].'&amp;action=delete">delete</a>';
 		}
 		elseif($session['Email'] === $site['AdminEmail'])
-			echo ' <a href="'.service_url.'/dashboard/delete.php?delete='.$row['CommentID'].'">delete</a>';
+			echo ' <a href="'.service_url.'/update.php?cid='.$row['CommentID'].'&amp;action=delete">delete</a>';
 	}
 
 	echo '</div>';
@@ -51,8 +51,8 @@ function PrintLink($site, $row, $session = false)
 
 	if($session && $session['Email'] === $site['AdminEmail'])
 	{
-		echo ' <a href="'.service_url.'/dashboard/verify.php?verify='.$row['LinkID'].'">verify</a>';
-		echo ' <a href="'.service_url.'/dashboard/delete.php?delete='.$row['LinkID'].'">delete</a>';
+		echo ' <a href="'.service_url.'/update.php?cid='.$row['LinkID'].'&amp;action=verify">verify</a>';
+		echo ' <a href="'.service_url.'/update.php?cid='.$row['LinkID'].'&amp;action=delete">delete</a>';
 	}
 
 	echo '</div>';
@@ -149,10 +149,25 @@ function GetSessionConstants()
 	return mysql_fetch_assoc($res);
 }
 
-
+//Remove static pages
+function UpdateComments($sid, $page){
+	//clean input
+	$page = trim(str_replace(array('/','?'), ' ', $page));
+	$page = str_replace('  ', ' ', $page);
+	
+	//Remove static files
+	$path = 'inc/'.intval($sid).'/'.$page;
+	if(file_exists($path.'.html'))
+		unlink($path.'.html');
+	if(file_exists($path.'.xml'))
+		unlink($path.'.xml');
+}
+		
 
 function LogReferer($site, $page)
 {
+	if(!$site)
+		return;
 	if(!isset($_GET['ref']))
 		return;
 	$ref = $_GET['ref'];
@@ -162,10 +177,10 @@ function LogReferer($site, $page)
 		return;
 	$res = @mysql_query('INSERT INTO Links (SiteID, Page, VisitorIP, Referer)
 	VALUES
-		('.$sid.',
+		('.$site['ID'].',
 		\''.mysql_real_escape_string($page).'\',
 		\''.mysql_real_escape_string($_SERVER['REMOTE_ADDR']).'\',
 		\''.mysql_real_escape_string($ref).'\'
 	)')
-	or die('<div class="commentError">'.mysql_error().'</div>');
+	or die('<div class="commentError">STAT:'.mysql_error().'</div>');
 }

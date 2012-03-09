@@ -18,7 +18,7 @@ $session = GetSessionConstants();
 	<a href="?sites">Sites</a>
 	<a href="?register">Register website</a>
 	<strong><?php echo htmlentities($session['Email']);?></strong>
-	<a href="<?php echo service_url;?>/logout/">Logout</a>
+	<a href="<?php echo service_url;?>/auth.php?logout">Logout</a>
 </header>
 <article>
 <?php
@@ -26,10 +26,6 @@ if($session)
 {
 	if(isset($_REQUEST['register']))
 		require('register.php');
-	elseif(isset($_GET['verify']))
-		require('verify.php');
-	elseif(isset($_GET['delete']))
-		require('delete.php');
 	elseif(isset($_GET['sid']))
 		require('site.php');
 	elseif(isset($_GET['sites']))
@@ -44,7 +40,7 @@ else
 {
 ?>
 	<h1>Not logged in</h1>
-	<form action="<?php echo service_url;?>/authorize" method="GET">
+	<form action="<?php echo service_url;?>/auth.php" method="GET">
 	<div>
 		E-mail:
 		<input type="text" name="email" />

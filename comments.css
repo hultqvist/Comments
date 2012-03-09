@@ -55,6 +55,9 @@
 	padding: 10px;
 	color: #999;
 }
+#commentForm a{
+	color: #999;
+}
 
 #commentForm textarea,
 #commentForm input{

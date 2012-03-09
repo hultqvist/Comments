@@ -33,6 +33,10 @@ $commentText = trim($_POST['commentText']);
 $commentEmail = filter_var($_POST['commentEmail'], FILTER_SANITIZE_EMAIL);
 $commentEmail = strtolower($commentEmail);
 
+//Set email cookie to autofill the email field
+$url = parse_url(service_url);
+setcookie("email", $commentEmail, time()+3600*365, $url['path'], $url['host'], $url['scheme'] === "https", false);
+
 //Verify input
 if(strlen($commentText) === 0)
 {
@@ -66,6 +70,8 @@ if($session && $commentEmail === $session['Email'])
 	)')
 	or die('<div class="commentError">'.mysql_error().'</div>');
 
+	UpdateComments($sid, $page);
+	
 	echo '<div class="commentOk">Comment posted.</div>';
 }
 else
